@@ -4,6 +4,8 @@ import os
 from application import config
 from application.config import LocalDevelopmentConfig
 from application.database import db
+from flask import Blueprint
+from flask_migrate import Migrate
 
 app = None
 api = None
@@ -18,7 +20,8 @@ def create_app():
 
     db.init_app(app)
     api = Api(app)
-    app.app_context().push()  
+    app.app_context().push()
+    migrate= Migrate(app, db)
     return app, api
 
 app, api = create_app()

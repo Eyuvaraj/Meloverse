@@ -8,7 +8,7 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class LocalDevelopmentConfig(Config):
-    SQLITE_DB_DIR = os.path.join(basedir, "../db_directory")
+    SQLITE_DB_DIR = os.path.join(basedir, "../instance")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(SQLITE_DB_DIR, "meloverse_db.sqlite3")
     DEBUG = False
 
