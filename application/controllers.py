@@ -5,7 +5,7 @@ from .models import User
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("base.html")
+    return render_template("index.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -20,7 +20,7 @@ def login():
         if user is None:
             return redirect(url_for("login"))
         else:
-            return redirect(url_for("admin"))
+            return redirect(url_for("admin_dashboard"))
         
 
 @app.route("/signup", methods=["GET", "POST"])

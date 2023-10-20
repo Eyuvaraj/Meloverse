@@ -1,27 +1,31 @@
-{% extends 'base.html' %}
+{% extends 'index.html' %}
 
 {% block body %}
+<div class="cover">
+    <div class="cover-content">
+        <div class="form-signin w-100 m-auto">
+            <form action="/signup" method="POST" id="create-user">
+                <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
 
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="name" id="floatingInput" placeholder="name">
+                    <label for="floatingInput">Your name</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" class="form-control" name="email" id="floatingInput"
+                        placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" name="password" id="floatingPassword"
+                        placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
 
-<div class="form-signin w-100 m-auto">
-    <form action="/signup" method="POST" id="create-user">
-        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" name="name" id="floatingInput" placeholder="name">
-            <label for="floatingInput">Your name</label>
+                <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
+            </form>
         </div>
-        <div class="form-floating">
-            <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Email address</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label>
-        </div>
-
-        <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
-    </form>
+    </div>
 </div>
 
 {% endblock %}
