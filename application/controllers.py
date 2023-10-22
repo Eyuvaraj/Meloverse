@@ -1,7 +1,16 @@
-from flask import redirect, url_for, render_template, request, Flask
+from flask import redirect, url_for, render_template, request, Flask, flash
 from flask import current_app as app
 from .database import db
 from .models import User
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def loader_user(user_id):
+    return User.query.get(user_id)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -11,33 +20,45 @@ def index():
 def login():
     if request.method=="GET":
         return render_template("login.html")
-    if request.method=="POST":
+    elif request.method=="POST":
         email = request.form["email"]
         password = request.form["password"]
-
-        user = User.query.filter_by(email=email, password=password).first()
-
-        if user is None:
+        
+        user = User.query.filter_by(email=email).first()
+        if user is not None and user.password == password:
+            if user.role == "admin":
+                login_user(user)
+                return redirect(url_for("admin_dashboard"))
+            elif user.role == "user":
+                login_user(user)
+                return redirect(url_for("user_dashboard"))
+        elif user is None:
+            flash("User does not exist")
             return redirect(url_for("login"))
         else:
-            return redirect(url_for("admin_dashboard"))
+            flash("Incorrect password")
+            return redirect(url_for("login"))
         
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "GET":
         return render_template("signup.html")
-    if request.method == "POST":
+    elif request.method == "POST":
 
         username = request.form["name"]
         email = request.form["email"]
         password = request.form["password"]
+        user=User.query.filter_by(email=email).first()
+        if user.email == email:
+            flash("Email already exists")
+            return redirect(url_for("signup"))
+        else:
+            new_user = User(username=username, email=email, password=password)
+            db.session.add(new_user)
+            db.session.commit()
 
-        new_user = User(username=username, email=email, password=password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
     
 @app.route("/admin", methods=["GET", "POST"])
 def admin_dashboard():
@@ -46,3 +67,8 @@ def admin_dashboard():
 @app.route("/user", methods=["GET", "POST"])
 def user_dashboard():
     return render_template("user_dashboard.html")
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("index"))

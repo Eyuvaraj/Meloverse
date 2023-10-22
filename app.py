@@ -18,6 +18,7 @@ def create_app():
         print("Staring Local Development")
         app.config.from_object(LocalDevelopmentConfig)
 
+    app.config['SECRET_KEY'] = "23508VWER-515J1PJ155"
     db.init_app(app)
     api = Api(app)
     app.app_context().push()
