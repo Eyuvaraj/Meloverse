@@ -23,6 +23,13 @@
                         Remember me
                     </label>
                 </div>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="container"> <h6>
+                    {{ messages[0] }}. Go to <a href="{{ url_for('login') }}">Sign-up page</a>. </h6>
+                </div>
+                {% endif %}
+                {% endwith %}
                 <button class="btn btn-primary w-100 py-2" type="submit" action="submit">Sign in</button>
             </form>
         </div>

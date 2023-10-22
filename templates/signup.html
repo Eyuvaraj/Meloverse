@@ -6,9 +6,16 @@
         <div class="form-signin w-100 m-auto">
             <form action="/signup" method="POST" id="create-user">
                 <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="container"> <h6>
+                    {{ messages[0] }}. Go to <a href="{{ url_for('login') }}">login page</a>. </h6>
+                </div>
+                {% endif %}
+                {% endwith %}
                 <div class="form-floating">
-                    <input type="text" required="True" class="form-control" name="name" id="floatingInput" placeholder="name">
+                    <input type="text" required="True" class="form-control" name="name" id="floatingInput"
+                        placeholder="name">
                     <label for="floatingInput">Your name</label>
                 </div>
                 <div class="form-floating">

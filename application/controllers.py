@@ -23,14 +23,15 @@ def login():
     elif request.method=="POST":
         email = request.form["email"]
         password = request.form["password"]
+        remember = True if request.form.get("remember") == "on" else False
         
         user = User.query.filter_by(email=email).first()
         if user is not None and user.password == password:
             if user.role == "admin":
-                login_user(user)
+                login_user(user, remember=remember)
                 return redirect(url_for("admin_dashboard"))
             elif user.role == "user":
-                login_user(user)
+                login_user(user, remember=remember)
                 return redirect(url_for("user_dashboard"))
         elif user is None:
             flash("User does not exist")
@@ -61,14 +62,17 @@ def signup():
         return redirect(url_for("login"))
     
 @app.route("/admin", methods=["GET", "POST"])
+@login_required
 def admin_dashboard():
     return render_template("admin_dashboard.html")
 
 @app.route("/user", methods=["GET", "POST"])
+@login_required
 def user_dashboard():
     return render_template("user_dashboard.html")
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("index"))
