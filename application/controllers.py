@@ -18,9 +18,7 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method=="GET":
-        return render_template("login.html")
-    elif request.method=="POST":
+    if request.method=="POST":
         email = request.form["email"]
         password = request.form["password"]
         remember = True if request.form.get("remember") == "on" else False
@@ -29,10 +27,10 @@ def login():
         if user is not None and user.password == password:
             if user.role == "admin":
                 login_user(user, remember=remember)
-                return redirect(url_for("admin_dashboard"))
+                return redirect(url_for("admin_dashboard",user=user.username))
             elif user.role == "user":
                 login_user(user, remember=remember)
-                return redirect(url_for("user_dashboard"))
+                return redirect(url_for("user_dashboard",user=user.username))
         elif user is None:
             flash("User does not exist")
             return redirect(url_for("login"))
@@ -40,12 +38,12 @@ def login():
             flash("Incorrect password")
             return redirect(url_for("login"))
         
+    return render_template("login.html")
+        
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    if request.method == "GET":
-        return render_template("signup.html")
-    elif request.method == "POST":
+    if request.method == "POST":
 
         username = request.form["name"]
         email = request.form["email"]
@@ -61,14 +59,16 @@ def signup():
 
         return redirect(url_for("login"))
     
-@app.route("/admin", methods=["GET", "POST"])
+    return render_template("signup.html")
+    
+@app.route("/admin/<user>", methods=["GET", "POST"])
 @login_required
-def admin_dashboard():
+def admin_dashboard(user):
     return render_template("admin_dashboard.html")
 
-@app.route("/user", methods=["GET", "POST"])
+@app.route("/user/<user>", methods=["GET", "POST"])
 @login_required
-def user_dashboard():
+def user_dashboard(user):
     return render_template("user_dashboard.html")
 
 @app.route("/logout")
