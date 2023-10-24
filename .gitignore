@@ -3,3 +3,4 @@
 application/__pycache__/
 /migrations/
 dbconnection.py
+/__pycache__/
