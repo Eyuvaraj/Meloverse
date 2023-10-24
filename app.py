@@ -23,12 +23,21 @@ def create_app():
     api = Api(app)
     app.app_context().push()
     migrate= Migrate(app, db)
+
+    from application.app_controllers.auth import auth
+    from application.app_controllers.users import user
+    from application.app_controllers.admin import admin
+
+    app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(user, url_prefix='/')
+    app.register_blueprint(admin, url_prefix='/')
+
     return app, api
 
 app, api = create_app()
 
 # Import all the controllers so they are loaded
-from application.controllers import *
+from application.index import *
 
 if __name__ == "__main__":
     app.run(debug=True)
