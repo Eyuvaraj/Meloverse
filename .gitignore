@@ -1,3 +1,5 @@
 /.env/
 /assets/
-/application/__pycache__/
+application/__pycache__/
+/migrations/
+dbconnection.py
