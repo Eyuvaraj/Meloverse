@@ -1,4 +1,4 @@
-from flask import redirect, url_for, render_template, request, Flask, flash
+from flask import redirect, url_for, render_template, request, Flask, flash, Blueprint
 from flask import current_app as app
 from .database import db
 from .models import User
@@ -64,12 +64,17 @@ def signup():
 @app.route("/admin/<user>", methods=["GET", "POST"])
 @login_required
 def admin_dashboard(user):
-    return render_template("admin_dashboard.html")
+    return render_template("admin/admin_dashboard.html")
 
 @app.route("/user/<user>", methods=["GET", "POST"])
 @login_required
 def user_dashboard(user):
-    return render_template("user_dashboard.html")
+    return render_template("user/user_dashboard.html")
+
+@app.route("/creator_center/<user>", methods=["GET", "POST"])
+@login_required
+def creator_dashboard(user):
+    return render_template("creator/creator_center.html")
 
 @app.route("/logout")
 @login_required

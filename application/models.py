@@ -8,3 +8,43 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(120), nullable=False, default="user")
+
+
+class Creator(db.Model):
+    __tablename__ = 'creator'
+    creator_id=db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    creator_name=db.Column(db.String, db.ForeignKey("user.username"))
+    creator_email=db.Column(db.String, db.ForeignKey("user.email"))
+    bio=db.Column(db.String)
+
+class Tracks(db.Model):
+    __tablename__ = 'tracks'
+    track_id=db.Column(db.Integer, autoincrement=True, primary_key=True)
+    track_name=db.Column(db.String, nullable=False)
+    artists=db.Column(db.String, nullable=False)
+    creator_id=db.Column(db.String, db.ForeignKey("creator.creator_name"))
+    track_link=db.Column(db.String, nullable=False)
+    genre=db.Column(db.String)
+    lyrics=db.Column(db.String)
+    duration=db.Column(db.String)
+    date_created=db.Column(db.Date)
+    album_id=db.Column(db.String, default='Null')
+
+class Album(db.Model):
+    __tablename__='album'
+    album_id=db.Column(db.Integer, autoincrement=True, primary_key=True)
+    album_name=db.Column(db.String, nullable=False)
+    release_year=db.Column(db.String)
+    genre=db.Column(db.String)
+    description=db.Column(db.String)
+
+class Playlist(db.Model):
+    __tablename__='playlist'
+    playlist_id=db.Column(db.Integer, autoincrement=True, primary_key=True)
+    playlist_name=db.Column(db.String)
+    user=db.Column(db.Integer, db.ForeignKey("user.id"))
+
+class User_Playlist(db.Model):
+    __tablename__='user_playlist'
+    playlist_id=db.Column(db.Integer, db.ForeignKey("playlist.playlist_id"), primary_key=True)
+    track_id=db.Column(db.Integer, db.ForeignKey("tracks.track_id"), primary_key=True)
