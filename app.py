@@ -19,9 +19,9 @@ def create_app():
         app.config.from_object(LocalDevelopmentConfig)
 
     app.config['SECRET_KEY'] = "23508VWER-515J1PJ155"
+    app.app_context().push()
     db.init_app(app)
     api = Api(app)
-    app.app_context().push()
     migrate= Migrate(app, db)
 
     from application.app_controllers.auth import auth

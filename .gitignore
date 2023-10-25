@@ -5,3 +5,4 @@ application/__pycache__/
 dbconnection.py
 /__pycache__/
 application/app_controllers/__pycache__
+/.vscode/
