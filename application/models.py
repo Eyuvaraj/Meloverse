@@ -9,12 +9,14 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(120), nullable=False, default="user")
 
+    def get_username(self):
+        return self.username
 
 class Creator(db.Model):
     __tablename__ = 'creator'
-    creator_id=db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
-    creator_name=db.Column(db.String, db.ForeignKey("user.username"))
-    creator_email=db.Column(db.String, db.ForeignKey("user.email"))
+    creator_id=db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    creator_name=db.Column(db.String, db.ForeignKey("users.username"))
+    creator_email=db.Column(db.String, db.ForeignKey("users.email"))
     bio=db.Column(db.String)
 
 class Tracks(db.Model):

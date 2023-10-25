@@ -1,6 +1,7 @@
 {% extends './base.html' %}
 
 {% block head %}
+<title>Meloverse | Admin</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/headerfooter.css') }}">
 {% endblock %}
 
@@ -8,14 +9,13 @@
 <header class="py-3 mb-3 border-bottom">
   <nav class="navbar navbar-expand">
       <div class="container">
-        <a href="/" class="navbar-brand link-body-emphasis">
-          🎧 Meloverse
+        <a href="{{ url_for("admin.admin_dashboard", user=current_user.username) }}" class="navbar-brand px-2 link-body-emphasis">
+          🎧 Meloverse | Admin Dashboard
         </a>
         <ul class="nav">
-          <li class="nav-item"><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
-          <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
-          <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
-          <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+          <li class="nav-item"><a href="{{ url_for('admin.user_management', user=current_user.username) }}" class="nav-link px-2 link-body-emphasis">User</a></li>
+          <li class="nav-item"><a href="{{ url_for('admin.songs_n_playlist_management', user=current_user.username)}}" class="nav-link px-2 link-body-emphasis">Songs & Playlists</a></li>
+          <li class="nav-item"><a href="{{ url_for('admin.stats', user=current_user.username)}}" class="nav-link px-2 link-body-emphasis">Stats</a></li>
         </ul>
           
 
@@ -33,7 +33,7 @@
               class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('user.user_dashboard', user=current_user.username) }}">Meloverse (app)</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
             <li><a class="dropdown-item" href="#">Profile</a></li>
             <li>
@@ -54,7 +54,7 @@
 {% block body %}
 <main class="flex-shrink-0">
   <div class="container">
-    <h6>Admin dashboard</h6>
+    <h6>summary</h6>
     <hr>
   </div>
 </main>
