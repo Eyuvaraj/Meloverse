@@ -1,7 +1,59 @@
 {% extends 'admin/admin_dashboard.html' %}
 
 {% block body %}
-<div class="container">
-    <h1>Hi</h1>
-</div>
+<main class="flex-shrink-0">
+    <div class="container">
+        <h6>User management</h6>
+        <div class="container">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Admin status</th>
+                        <th>Creator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, creator in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+
+                        {% if user.role =="admin" %}
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
+                                method="post">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button type="submit" name="revoke" value="yes">revoke</button>
+                            </form>
+                        </td>
+                        {% else %}
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
+                                method="post">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button type="submit" name="grant" value="yes">Grant</button>
+                            </form>
+                        </td>
+                        {% endif %}
+
+                        {% if creator != None %}
+                        <td><a href="#">Yes</a></td>
+                        {% else %}
+                        <td>No</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </table>
+    </div>
+</main>
 {% endblock %}

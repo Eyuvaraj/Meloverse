@@ -3,34 +3,42 @@
 {% block body %}
 <div class="cover">
     <div class="cover-content">
-        <div class="form-signin w-100 m-auto">
-            <form action="/signup" method="POST" id="create-user">
-                <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <div class="container"> <h6>
-                    {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>. </h6>
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='dancing cat.gif') }}" class="img">
+            </div>
+            <div class="col-md-6">
+                <div class="form-signin w-100 m-auto">
+                    <form action="/signup" method="POST" id="create-user">
+                        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <div class="container">
+                            <h6>
+                                {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                            </h6>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        <div class="form-floating">
+                            <input type="text" required="True" class="form-control" name="name" id="floatingInput"
+                                placeholder="name">
+                            <label for="floatingInput">Your name</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="email" required="True" class="form-control" name="email" id="floatingInput"
+                                placeholder="name@example.com">
+                            <label for="floatingInput">Email address</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" required="True" class="form-control" name="password"
+                                id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">Password</label>
+                        </div>
+                        <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
+                    </form>
                 </div>
-                {% endif %}
-                {% endwith %}
-                <div class="form-floating">
-                    <input type="text" required="True" class="form-control" name="name" id="floatingInput"
-                        placeholder="name">
-                    <label for="floatingInput">Your name</label>
-                </div>
-                <div class="form-floating">
-                    <input type="email" required="True" class="form-control" name="email" id="floatingInput"
-                        placeholder="name@example.com">
-                    <label for="floatingInput">Email address</label>
-                </div>
-                <div class="form-floating">
-                    <input type="password" required="True" class="form-control" name="password" id="floatingPassword"
-                        placeholder="Password">
-                    <label for="floatingPassword">Password</label>
-                </div>
-
-                <button class="btn btn-primary w-100 py-2" type="submit">Sign up</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
