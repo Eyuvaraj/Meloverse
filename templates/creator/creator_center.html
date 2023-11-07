@@ -9,14 +9,13 @@
 <header class="py-3 mb-3 border-bottom">
   <nav class="navbar navbar-expand">
     <div class="container">
-      <a href="/" class="navbar-brand link-body-emphasis">
-        🎧 Meloverse
+      <a href="{{ url_for('user.creator_dashboard', user=current_user.username) }}" class="navbar-brand link-body-emphasis">
+        🎧 Meloverse | Creator Center
       </a>
       <ul class="nav">
-        <li class="nav-item"><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.new', user=current_user.username) }}" class="nav-link px-2 link-body-emphasis">New</a></li>
+        <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Announcements</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.profile', user=current_user.username)}}" class="nav-link px-2 link-body-emphasis">Profile</a></li>
       </ul>
 
 
@@ -55,7 +54,8 @@
 {% block body %}
 <main class="flex-shrink-0">
   <div class="container">
-    <h6>Creator dashboard</h6>
+    <li>My songs, albums: stats, likes-dislikes, no. of listeners</li>
+    <li>Post announcement-upvote,downvote...</li>
     <hr>
   </div>
 </main>

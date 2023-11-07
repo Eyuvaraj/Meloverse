@@ -42,3 +42,33 @@ def discover(user):
 @login_required
 def creator_dashboard(user):
     return render_template("creator/creator_center.html")
+
+@user.route("creator_center/<user>/new", methods=["GET", "POST"])
+@login_required
+def new(user):
+    return render_template("creator/new.html")
+
+@user.route("creator_center/<user>/profile", methods=["GET", "POST"])
+@login_required
+def profile(user):
+    if request.form.get("edit_profile")=="True":
+        return redirect(url_for("user.edit_profile", user=current_user.username))
+    creator=Creator.query.filter_by(creator_id=current_user.id).first()
+    return render_template("creator/profile.html", bio=creator.bio)
+
+@user.route("creator_center/<user>/edit_profile", methods=["GET", "POST"])
+@login_required
+def edit_profile(user):
+    if request.method=="POST":
+        name=request.form["name"]
+        bio=request.form["bio"]
+        user = Users.query.filter_by(id=current_user.id).first()
+        creator = Creator.query.filter_by(creator_id=current_user.id).first()
+        if user and creator:
+            if name != "":
+                user.username=name
+            elif bio != "":
+                creator.bio=bio
+            db.session.commit()
+        return redirect(url_for("user.profile", user=current_user.username))
+    return render_template("creator/edit_profile.html")

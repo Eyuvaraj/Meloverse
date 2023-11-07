@@ -9,7 +9,7 @@
 <header class="py-3 mb-3 border-bottom">
   <nav class="navbar navbar-expand">
     <div class="container">
-      <a href="{{ url_for(" admin.admin_dashboard", user=current_user.username) }}"
+      <a href="{{ url_for('admin.admin_dashboard', user=current_user.username) }}"
         class="navbar-brand px-2 link-body-emphasis">
         🎧 Meloverse | Admin Dashboard
       </a>
@@ -59,7 +59,8 @@
 {% block body %}
 <main class="flex-shrink-0">
   <div class="container">
-    <h6>summary</h6>
+    <h6>no. of users, creators, admins, new users</h6>
+    <h6>most listened creator, usage stats...</h6>
     <hr>
   </div>
 </main>
