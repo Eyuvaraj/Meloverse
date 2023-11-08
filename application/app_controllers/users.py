@@ -1,9 +1,10 @@
 from flask import redirect, url_for, render_template, request, Flask, flash, Blueprint
 from flask import current_app as app
 from ..database import db
-from ..models import Users, Creator
+from ..models import Users, Creator, Announcement, Announcement_stats
 from flask_login import login_required, current_user
 from application.app_controllers import auth
+from datetime import datetime
 
 user=Blueprint('user',__name__)
 
@@ -36,7 +37,34 @@ def user_playlists(user):
 @user.route("user/<user>/discover", methods=["GET", "POST"])
 @login_required
 def discover(user):
-    return render_template("user/discover.html")
+    if request.method=="POST":
+        user=current_user.id
+        reaction=request.form.get('reaction')
+        announcement_id=request.form.get('announcement_id')
+        announcement=Announcement.query.filter_by(announcement_id=announcement_id).first()
+        already_liked=Announcement_stats.query.filter_by(announcement_id=announcement_id, user_id=user).first()
+        
+        if already_liked:
+            if reaction=="like" and already_liked.value != 1:
+                already_liked.value=1
+                announcement.likes+=1
+                announcement.dislikes-=1
+            elif reaction=="dislike" and already_liked.value != -1:
+                already_liked.value=-1
+                announcement.dislikes+=1
+                announcement.likes-=1
+        else:
+            if reaction=="like":
+                new_announcement_stat=Announcement_stats(announcement_id=announcement_id, user_id=user, value=1)
+                announcement.likes+=1
+            elif reaction=="dislike":
+                new_announcement_stat=Announcement_stats(announcement_id=announcement_id, user_id=user, value=-1)
+                announcement.dislikes+=1
+            db.session.add(new_announcement_stat)
+
+        db.session.commit()
+    announcements=Announcement.query.order_by(Announcement.date.desc()).limit(10).all()
+    return render_template("user/discover.html", announcements=announcements)
 
 @user.route("creator_center/<user>/", methods=["GET", "POST"])
 @login_required
@@ -72,3 +100,19 @@ def edit_profile(user):
             db.session.commit()
         return redirect(url_for("user.profile", user=current_user.username))
     return render_template("creator/edit_profile.html")
+
+@user.route("creator_center/<user>/announcement", methods=["GET", "POST"])
+@login_required
+def announcement(user):
+    if request.method=="POST":
+        announcement = request.form.get('announcement')
+        if announcement != "":
+            creator = current_user.username
+            heading = request.form.get('heading')
+            link = request.form.get('link')
+            date = datetime.now()
+            new_annoucement=Announcement(announcement=announcement, date=date, creator=creator, heading=heading, link=link)
+            db.session.add(new_annoucement)
+            db.session.commit()
+            flash("Annoucement Posted 🎊")
+    return render_template("creator/announcement.html", user=current_user.username)

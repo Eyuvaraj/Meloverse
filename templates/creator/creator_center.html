@@ -3,19 +3,24 @@
 {% block head %}
 <title>Meloverse | Creator Center</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/headerfooter.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/otherelements.css') }}">
 {% endblock %}
 
 {% block navbar %}
 <header class="py-3 mb-3 border-bottom">
   <nav class="navbar navbar-expand">
     <div class="container">
-      <a href="{{ url_for('user.creator_dashboard', user=current_user.username) }}" class="navbar-brand link-body-emphasis">
+      <a href="{{ url_for('user.creator_dashboard', user=current_user.username) }}"
+        class="navbar-brand link-body-emphasis">
         🎧 Meloverse | Creator Center
       </a>
       <ul class="nav">
-        <li class="nav-item"><a href="{{ url_for('user.new', user=current_user.username) }}" class="nav-link px-2 link-body-emphasis">New</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 link-body-emphasis">Announcements</a></li>
-        <li class="nav-item"><a href="{{ url_for('user.profile', user=current_user.username)}}" class="nav-link px-2 link-body-emphasis">Profile</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.new', user=current_user.username) }}"
+            class="nav-link px-2 link-body-emphasis">New</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.announcement', user=current_user.username)}}"
+            class="nav-link px-2 link-body-emphasis">Announcements</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.profile', user=current_user.username)}}"
+            class="nav-link px-2 link-body-emphasis">Profile</a></li>
       </ul>
 
 
@@ -33,9 +38,8 @@
             class="rounded-circle">
         </a>
         <ul class="dropdown-menu text-small">
-          <li><a class="dropdown-item" href="#">New project...</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
-          <li><a class="dropdown-item" href="#">Profile</a></li>
+          <li><a class="dropdown-item" href="{{ url_for('user.user_dashboard', user=current_user.username)}}">Meloverse
+              (app)</a></li>
           <li>
             <hr class="dropdown-divider">
           </li>

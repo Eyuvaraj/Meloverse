@@ -29,7 +29,7 @@
                             <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
                                 method="post">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit" name="revoke" value="yes">revoke</button>
+                                <button class="btn btn-info btn-sm" type="submit" name="revoke" value="yes">revoke</button>
                             </form>
                         </td>
                         {% else %}
@@ -38,7 +38,7 @@
                             <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
                                 method="post">
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button type="submit" name="grant" value="yes">Grant</button>
+                                <button class="btn btn-success btn-sm" type="submit" name="grant" value="yes">Grant</button>
                             </form>
                         </td>
                         {% endif %}

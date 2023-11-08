@@ -8,12 +8,12 @@
             <input type="text" id="name" name="name" class="form-control">
         </div>
         <div class="mb-3">
-            <label for="bio" class="form-label">Bio:</label>
+            <label for="bio" class="form-label">Bio : </label>
             <textarea id="bio" name="bio" class="form-control" rows="4"></textarea>
-        </div>        
+        </div>
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <button class="btn btn-outline-light btn-sm" type="submit" name="update_profile" value="True">Update Profile</button>
-        </input>
+        <button class="btn btn-outline-light btn-sm" type="submit" name="update_profile" value="True">Update
+            Profile</button>
     </form>
 </div>
 {% endblock %}

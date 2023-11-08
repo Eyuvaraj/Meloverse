@@ -24,7 +24,7 @@ def user_management(user):
         elif revoke=="yes":
             db.session.query(Users).filter_by(id=user_id).update({"role":"user"})
         db.session.commit()
-    users_=db.session.query(Users, Creator).outerjoin(Creator, Users.id == Creator.creator_id).all()
+    users_=db.session.query(Users, Creator).outerjoin(Creator, Users.id == Creator.creator_id).order_by(Users.role).limit(50).all()
     return render_template("admin/user_mg.html", users=users_)
 
 @admin.route("/admin/<user>/songs_manager", methods=["GET", "POST"])
