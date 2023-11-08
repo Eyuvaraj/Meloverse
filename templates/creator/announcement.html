@@ -1,0 +1,31 @@
+{% extends "creator/creator_center.html" %}
+
+{% block body %}
+<div class="container">
+    <form id="announcement-form" method="post">
+        <h4>Post an announcement</h4>
+        <div class="mb-3">
+            <label for="heading" class="form-label">Announcement Heading : </label>
+            <input type="text" id="heading" name="heading" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="announcement" class="form-label">Announcement : </label>
+            <textarea id="announcement" name="announcement" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="link" class="form-label">Link : </label>
+            <input type="text" id="link" name="link" class="form-control">
+        </div>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <button class="btn btn-outline-light btn-sm" type="submit">Post</button>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <br>
+        {{ messages[0] }}
+        <br>
+        {% endif %}
+        {% endwith %}
+    </form>
+</div>
+{% endblock %}
