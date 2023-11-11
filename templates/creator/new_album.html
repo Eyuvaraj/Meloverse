@@ -1,0 +1,25 @@
+{% extends 'creator/creator_center.html' %}
+
+{% block body %}
+<div class="container">
+    <form id="new_album" method="post">
+        <h4>Create a New Album!</h4>
+        <section id="new_album">
+        <div class="form-floating mt-2 mb-2">
+            <input type="text" id="album_name" placeholder = "Album name" name="album_name" required="True" class="form-control">
+            <label for = "album_name"> Album Name :  </label>
+        </div>        
+        <div class="form-floating mt-2 mb-2">
+            <input type="text" id="genre" placeholder = "genre" name="genre" required="True" class="form-control">
+            <label for="genre">Genre : </label>
+        </div>
+        <div class="form-floating mt-2 mb-2">
+            <textarea id="album_description" placeholder="Album description" name="album_description" class="form-control" rows="4"></textarea>
+            <label for="album_description">Album description :</label>
+        </div>        
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <button class="btn-outline-light btn" type="submit" name="add_track" value="True">Add a Track</button>
+    </section>
+</div>
+<br>
+{% endblock %}

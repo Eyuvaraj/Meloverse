@@ -18,6 +18,9 @@ class Creator(db.Model):
     creator_name=db.Column(db.String, db.ForeignKey("users.username"))
     creator_email=db.Column(db.String, db.ForeignKey("users.email"))
     bio=db.Column(db.String)
+    no_of_singles=db.Column(db.Integer, default=0)
+    no_of_albums=db.Column(db.Integer, default=0)
+    songs_published=db.Column(db.Integer, default=0)
 
 
 class Tracks(db.Model):
@@ -32,15 +35,19 @@ class Tracks(db.Model):
     duration=db.Column(db.String)
     date_created=db.Column(db.Date)
     album_id=db.Column(db.String, default='Null')
+    likes=db.Column(db.Integer, default=0)
+    dislikes=db.Column(db.Integer, default=0)
 
 
 class Album(db.Model):
     __tablename__='album'
     album_id=db.Column(db.Integer, autoincrement=True, primary_key=True)
+    creator_id=db.Column(db.String, db.ForeignKey("creator.creator_id"))
     album_name=db.Column(db.String, nullable=False)
     release_year=db.Column(db.String)
     genre=db.Column(db.String)
     description=db.Column(db.String)
+    no_of_tracks=db.Column(db.Integer, default=0)
 
 
 class Playlist(db.Model):

@@ -1,0 +1,34 @@
+{% extends 'creator/creator_center.html' %}
+
+{% block body %}
+<div class="container">
+    <form id="add_track" method="post">
+        <h4>Add a new track to the album "{{ album.album_name }}"</h4>
+        <div class="form-floating mt-2 mb-2">
+            <input type="text" id="song_name" placeholder = "Song name" name="song_name" required="True" class="form-control">
+            <label for = "song_name"> Song Name :  </label>
+        </div>        
+        <div class="form-floating mt-2 mb-2">
+            <input type="text" id="artists" placeholder = "Artist name" name="artists" required="True" class="form-control">
+            <label for="artists">Artists : </label>
+        </div>
+        <div class="form-floating mt-2 mb-2">
+            <input type="text" id="song_link" placeholder = "Song link" name="song_link" required="True" class="form-control">
+            <label for="song_link">Song link : </label>
+        </div>
+        <div class="form-floating mt-2 mb-2">
+            <textarea id="lyrics" placeholder=" " name="lyrics" class="form-control" rows="4"></textarea>
+            <label for="lyrics">Lyrics :</label>
+        </div>        
+        <div class="form-floating mt-2 mb-2">
+            <input type="text" id="duration" placeholder = "Song duration" name="duration" required="True" class="form-control">
+            <label for="duration">Song duration : </label>
+        </div>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <button class="btn-outline-light btn" type="submit" name="publish" value="True">Publish Album</button>
+        ( OR )
+        <button class="btn-outline-secondary btn" type="submit" name="add_track" value="True">Add another Track</button>
+    </form>
+</div>
+<br>
+{% endblock %}
