@@ -37,6 +37,7 @@ class Tracks(db.Model):
     album_id=db.Column(db.String, default='Null')
     likes=db.Column(db.Integer, default=0)
     dislikes=db.Column(db.Integer, default=0)
+    plays=db.Column(db.Integer, default=0)
 
 
 class Album(db.Model):
