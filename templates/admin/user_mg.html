@@ -3,7 +3,7 @@
 {% block body %}
 <main class="flex-shrink-0">
     <div class="container">
-        <h6>User management</h6>
+        <h4>User management</h4>
         <div class="container">
             <table class="table table-hover">
                 <thead class="thead-dark">
@@ -12,7 +12,7 @@
                         <th>Username</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Admin status</th>
+                        <th>Action</th>
                         <th>Creator</th>
                     </tr>
                 </thead>
@@ -26,20 +26,69 @@
                         {% if user.role =="admin" %}
                         <td>{{ user.role }}</td>
                         <td>
-                            <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
-                                method="post">
-                                <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button class="btn btn-info btn-sm" type="submit" name="revoke" value="yes">revoke</button>
-                            </form>
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#RevokeModal_{{ user.id }}">
+                                Revoke
+                            </button>
+                            <div class="modal fade" id="RevokeModal_{{ user.id }}" tabindex="-1"
+                                aria-labelledby="RevokeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="RevokeModalLabel">Revoke Admin Role</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Do you want to revoke administrator privilage of {{ user.username }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <form
+                                                action="{{ url_for('admin.user_management', user=current_user.username) }}"
+                                                method="post">
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                <button class="btn btn-success btn-sm" type="submit" name="revoke"
+                                                    value="yes">revoke</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                         {% else %}
                         <td>{{ user.role }}</td>
                         <td>
-                            <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
-                                method="post">
-                                <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button class="btn btn-success btn-sm" type="submit" name="grant" value="yes">Grant</button>
-                            </form>
+                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#GrantModal_{{ user.id }}">
+                                Grant
+                            </button>
+                            <div class="modal fade" id="GrantModal_{{ user.id }}" tabindex="-1" aria-labelledby="GrantModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="GrantModalLabel">Grant Admin Role</h5>
+                                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Do you want to grant administrator privilage to {{ user.username }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <form action="{{ url_for('admin.user_management', user=current_user.username) }}"
+                                                method="post">
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                <button class="btn btn-info btn-sm" type="submit" name="grant"
+                                                    value="yes">Grant</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                         {% endif %}
 
