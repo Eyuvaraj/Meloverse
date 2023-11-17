@@ -9,14 +9,17 @@
 <header class="py-3 mb-3 border-bottom">
   <nav class="navbar navbar-expand">
     <div class="container">
-      <a href="{{ url_for('user.user_dashboard', user=current_user.username) }}" class="navbar-brand link-body-emphasis">
+      <a href="{{ url_for('user.user_dashboard', user=current_user.username) }}"
+        class="navbar-brand link-body-emphasis">
         🎧 Meloverse
       </a>
       <ul class="nav">
         <li class="nav-item"><a href="{{ url_for('user.favorites', user=current_user.username) }}"
             class="nav-link px-2 link-body-emphasis">Favorites</a></li>
-        <li class="nav-item"><a href="{{ url_for('user.user_playlists', user=current_user.username) }}" class="nav-link px-2 link-body-emphasis">My Playlists</a></li>
-        <li class="nav-item"><a href="{{ url_for('user.discover', user=current_user.username) }}" class="nav-link px-2 link-body-emphasis">Discover</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.user_playlists', user=current_user.username) }}"
+            class="nav-link px-2 link-body-emphasis">My Playlists</a></li>
+        <li class="nav-item"><a href="{{ url_for('user.discover', user=current_user.username) }}"
+            class="nav-link px-2 link-body-emphasis">Discover</a></li>
       </ul>
 
 
@@ -35,12 +38,15 @@
         </a>
         <ul class="dropdown-menu text-small">
           {% if creator_signup_status == None %}
-          <li><a class="dropdown-item" href="{{ url_for('user.creator_signup', user=current_user.username) }}">Register as Creator</a></li>
+          <li><a class="dropdown-item" href="{{ url_for('user.creator_signup', user=current_user.username) }}">Register
+              as Creator</a></li>
           {% else %}
-          <li><a class="dropdown-item" href="{{ url_for('user.creator_dashboard', user=current_user.username) }}">Creator Center</a></li>
+          <li><a class="dropdown-item"
+              href="{{ url_for('user.creator_dashboard', user=current_user.username) }}">Creator Center</a></li>
           {% endif %}
           {% if current_user.role == "admin" %}
-          <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard', user=current_user.username) }}">Admin Dashboard</a></li>
+          <li><a class="dropdown-item" href="{{ url_for('admin.admin_dashboard', user=current_user.username) }}">Admin
+              Dashboard</a></li>
           {% endif %}
           <li>
             <hr class="dropdown-divider">
@@ -61,7 +67,10 @@
 <main class="flex-shrink-0">
   <div class="container">
     <div class="alert alert-light alert-dismissible fade show" role="alert">
-      <strong>Hey {{ current_user.username }}!</strong> You should check in on some of those fields below.
+      <strong>Hey {{ current_user.username }}! </strong> {{ alert.alert }}
+      {% if alert.link!="" %}
+      <a href="{{ alert.link }}" class="alert-link">👇</a>
+      {% endif %}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <h6>anouncements from admin, follow creators...</h6>

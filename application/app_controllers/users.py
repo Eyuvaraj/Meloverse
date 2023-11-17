@@ -14,8 +14,11 @@ user = Blueprint("user", __name__)
 @user.route("/user/<user>/home", methods=["GET", "POST"])
 @login_required
 def user_dashboard(user):
+    alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
-    return render_template("user/user_dashboard.html", creator_signup_status=creator)
+    return render_template(
+        "user/user_dashboard.html", creator_signup_status=creator, alert=alert
+    )
 
 
 @user.route("user/<user>/creator_signup", methods=["GET", "POST"])
@@ -110,6 +113,7 @@ def creator_dashboard(user):
                 album = Album.query.filter_by(album_id=song.album_id).first()
                 album.no_of_tracks -= 1
         db.session.commit()
+
         album_id = request.form.get("album_id")
         album = Album.query.filter_by(album_id=album_id).first()
         if album != None and request.form.get("delete_album") == "yes":
@@ -217,7 +221,14 @@ def creator_dashboard(user):
         .join(tracks_alias, Album.album_id == tracks_alias.album_id)
         .join(Creator, Album.creator_id == Creator.creator_id)
         .filter(Creator.creator_id == id)
-        .group_by(Album.album_id, Album.album_name, Album.release_year, Album.genre, Album.description, Album.no_of_tracks)
+        .group_by(
+            Album.album_id,
+            Album.album_name,
+            Album.release_year,
+            Album.genre,
+            Album.description,
+            Album.no_of_tracks,
+        )
         .all()
     )
 
@@ -234,7 +245,7 @@ def creator_dashboard(user):
         most_played_album=most_played_album,
         songs_published=singles_published,
         albums_published=albums_published,
-        album_obj=album_obj
+        album_obj=album_obj,
     )
 
 
@@ -413,3 +424,72 @@ def new_album(user):
                 url_for("user.add_track", user=current_user.username, album=album_name)
             )
     return render_template("creator/new_album.html", user=current_user.username)
+
+
+@user.route("user/<user>/creator/<creator>", methods=["GET", "POST"])
+@login_required
+def creator_profile(user, creator):
+    creator = Creator.query.filter_by(creator_id=current_user.id).first()
+    if request.method == "POST":
+        reaction = request.form.get("reaction")
+        if reaction == "follow":
+            new_fan = whois_Followeing_who(
+                fan_id=current_user.id, fan_of=creator.creator_id
+            )
+            db.session.add(new_fan)
+            creator.followers += 1
+            db.session.commit()
+
+        elif reaction == "unfollow":
+            ex_Fan = whois_Followeing_who.query.filter_by(
+                fan_id=current_user.id, fan_of=creator.creator_id
+            ).first()
+            db.session.delete(ex_Fan)
+            creator.followers -= 1
+            db.session.commit()
+
+    follow_status = whois_Followeing_who.query.filter_by(
+        fan_id=current_user.id, fan_of=creator.creator_id
+    ).first()
+
+    singles = Tracks.query.filter_by(
+        creator_id=creator.creator_id, album_id="Null"
+    ).all()
+
+    songs = (
+        db.session.query(Tracks, Album.album_name)
+        .join(Album, Tracks.album_id == Album.album_id)
+        .filter(Tracks.creator_id == creator.creator_id)
+        .all()
+    )
+
+    tracks_alias = aliased(Tracks)
+
+    album_obj = (
+        db.session.query(
+            Album,
+            db.func.sum(tracks_alias.plays).label("total_plays"),
+            db.func.sum(tracks_alias.likes).label("total_likes"),
+            db.func.sum(tracks_alias.dislikes).label("total_dislikes"),
+        )
+        .join(tracks_alias, Album.album_id == tracks_alias.album_id)
+        .join(Creator, Album.creator_id == Creator.creator_id)
+        .filter(Creator.creator_id == creator.creator_id)
+        .group_by(
+            Album.album_id,
+            Album.album_name,
+            Album.release_year,
+            Album.genre,
+            Album.description,
+            Album.no_of_tracks,
+        )
+        .all()
+    )
+    return render_template(
+        "user/creator_profile.html",
+        creator=creator,
+        singles=singles,
+        songs=songs,
+        albums_obj=album_obj,
+        follow_status=follow_status,
+    )

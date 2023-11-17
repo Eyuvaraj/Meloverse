@@ -1,12 +1,17 @@
 {% extends "user/user_dashboard.html" %}
 
 {% block body %}
-<main class="flex-shrink-0">
-    <div class="container">
-        <form method="POST">
-            <p>Do you like to register as creator?</p>
-            <button type="submit" class="btn btn-primary">Register as Creator</button>
-        </form>          
-    </div>
-  </main>
+
+<div class="container d-flex align-items-center justify-content-center">
+    <main class="text-center">
+        <div class="container">
+            <img src="{{ url_for('static', filename='images/thinkingboy.png') }}" class="img"
+                style="width: 30%; height: auto; margin-bottom: 20px;">
+            <form method="POST">
+                <p>Do you like to register as a Creator?</p>
+                <button type="submit" class="btn btn-primary">Register as Creator</button>
+            </form>
+        </div>
+    </main>
+</div>
 {% endblock %}

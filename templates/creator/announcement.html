@@ -10,7 +10,7 @@
         </div>
         <div class="mb-3">
             <label for="announcement" class="form-label">Announcement : </label>
-            <textarea id="announcement" name="announcement" class="form-control" rows="4"></textarea>
+            <textarea id="announcement" name="announcement" class="form-control" rows="3"></textarea>
         </div>
         <div class="mb-3">
             <label for="link" class="form-label">Link : </label>
@@ -18,14 +18,17 @@
         </div>
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         <button class="btn btn-outline-light btn-sm" type="submit">Post</button>
-
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <br>
-        {{ messages[0] }}
-        <br>
-        {% endif %}
-        {% endwith %}
     </form>
+    <br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ messages[0] }}
+        <a href="{{ url_for('user.creator_dashboard', user=current_user.username) }}">Go to Dashboard</a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <br>
+    {% endif %}
+    {% endwith %}
 </div>
 {% endblock %}

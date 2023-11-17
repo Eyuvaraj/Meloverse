@@ -16,8 +16,8 @@
       <ul class="nav">
         <li class="nav-item"><a href="{{ url_for('admin.user_management', user=current_user.username) }}"
             class="nav-link px-2 link-body-emphasis">Users</a></li>
-        <li class="nav-item"><a href="{{ url_for('admin.songs_n_playlist_management', user=current_user.username)}}"
-            class="nav-link px-2 link-body-emphasis">Songs & Playlists</a></li>
+        <li class="nav-item"><a href="{{ url_for('admin.alert', user=current_user.username)}}"
+            class="nav-link px-2 link-body-emphasis">Create Alert</a></li>
         <li class="nav-item"><a href="{{ url_for('admin.stats', user=current_user.username)}}"
             class="nav-link px-2 link-body-emphasis">Stats</a></li>
       </ul>

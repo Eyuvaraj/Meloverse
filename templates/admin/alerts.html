@@ -1,0 +1,31 @@
+{% extends 'admin/admin_dashboard.html' %}
+
+{% block body %}
+<div class="container">
+    <form id="alert-form" method="post">
+        <h4>Create an alert</h4>
+        <p>(The latest alert will be displayed to the users in their Dashboard)</p>
+        <div class="mb-3">
+            <label for="alert" class="form-label">Alert : </label>
+            <input type="text" id="alert" name="alert" required="true" class="form-control"
+                placeholder="A short and simple sentence (e.g., 'You should check out Vande Mataram by AR Rahman Now!').">
+        </div>
+        <div class="mb-3">
+            <label for="link" class="form-label">Link (optional) : </label>
+            <input type="text" id="link" name="link" class="form-control" placeholder="sample link">
+        </div>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <button class="btn btn-outline-light btn-sm" type="submit">Post</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <br>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ messages[0] }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <br>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

@@ -2,28 +2,30 @@
 
 {% block body %}
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/single.jpg') }}" class="card-img-top" height="300">
-                <div class="card-body">
-                  <h5 class="card-title">New Single</h5>
-                  <p class="card-text">Release a new Single.</p>
-                  <a href="{{ url_for('user.new_single', user=current_user.username) }}" class="btn btn-primary">Click Here</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/playlist.jpg') }}" class="card-img-top" height="300">
-                <div class="card-body">
-                  <h5 class="card-title">New Album</h5>
-                  <p class="card-text">Release a set of Tracks.</p>
-                  <a href="{{ url_for('user.new_album', user=current_user.username) }}" class="btn btn-primary">Click Here</a>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card text-center">
+        <img src="{{ url_for('static', filename='images/single.jpg') }}" class="card-img-top"
+          style="object-fit: cover; max-height: 250px; max-width: 100%;">
+        <div class="card-body">
+          <h5 class="card-title">New Single</h5>
+          <p class="card-text">Release a new Single.</p>
+          <a href="{{ url_for('user.new_single', user=current_user.username) }}" class="btn btn-primary">Click Here</a>
         </div>
       </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card text-center">
+        <img src="{{ url_for('static', filename='images/album.jpg') }}" class="card-img-top"
+          style="object-fit: cover; max-height: 250px; max-width: 100%;">
+        <div class="card-body">
+          <h5 class="card-title">New Album</h5>
+          <p class="card-text">Release a set of Tracks.</p>
+          <a href="{{ url_for('user.new_album', user=current_user.username) }}" class="btn btn-warning">Click Here</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <br>
 {% endblock %}

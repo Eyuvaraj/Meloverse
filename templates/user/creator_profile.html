@@ -1,0 +1,201 @@
+{% extends "user/user_dashboard.html" %}
+
+{% block body %}
+<div class="container">
+    <small><a href="{{ url_for('user.user_dashboard', user=current_user.username) }}"> <--go back </a></small>
+    <section>
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-2">
+                    <img src="{{ url_for('static', filename='avatar3.jpg') }}" class="img-fluid rounded-start">
+                </div>
+                <div class="col-md-10">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ creator.creator_name }} | <small><span
+                                    class="badge rounded-pill bg-info text-dark"> {{
+                                    creator.followers }} followers</span></small></h5>
+                        <p class="card-text">{{ creator.bio }}</p>
+                        <p class="card-text"><small class="text-muted">Albums: {{ creator.no_of_albums }} |
+                                Singles: {{ creator.no_of_singles }}</small></p>
+                        <div class="btn-group" role="group">
+                            {% if follow_status==None %}
+                            <form method="post">
+                                <input type="hidden" name="creator" value="{{ creator.creator_id }}">
+                                <input type="hidden" name="reaction" value="follow">
+                                <button type="submit" class="btn btn-outline-light btn-sm">🩵Follow</button>
+                            </form>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-light btn-sm">🩵Following</button>
+                            <form method="post">
+                                <input type="hidden" name="creator" value="{{ creator.creator_id }}">
+                                <input type="hidden" name="reaction" value="unfollow">
+                                <button type="submit" class="btn btn-outline-light btn-sm">Unfollow</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        {% if singles!=[] or songs!=[] %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4>SONGS</h4>
+                <div class="container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Likes</th>
+                                <th>Dislikes</th>
+                                <th>Streams</th>
+                                <th>Single/Album</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for song in singles %}
+                            <tr>
+                                <td>{{ song.track_name }}</td>
+                                <td>{{ song.likes }}</td>
+                                <td>{{ song.dislikes }}</td>
+                                <td>{{ song.plays }}</td>
+                                <td>Single</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#lyrics_{{ song.track_id }}">
+                                        Lyrics
+                                    </button>
+                                    <div class="modal fade" id="lyrics_{{ song.track_id }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="lyricsModal"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="lyricsModal">Lyrics of "{{
+                                                        song.track_name }}"</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{{ song.lyrics }}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#deletesingle_{{ song.track_id }}">
+                                        Play
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% for song, album in songs %}
+                            <tr>
+                                <td>{{ song.track_name }}</td>
+                                <td>{{ song.likes }}</td>
+                                <td>{{ song.dislikes }}</td>
+                                <td>{{ song.plays }}</td>
+                                <td>{{ album }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#lyrics_{{ song.track_id }}">
+                                        Lyrics
+                                    </button>
+                                    <div class="modal fade" id="lyrics_{{ song.track_id }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="lyricsLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="lyricsLabel">Lyrics of "{{
+                                                        song.track_name }}"</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{{ song.lyrics }}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#deletesong_{{ song.track_id }}">
+                                        Play
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <h5>No songs published!!</h5>
+        {% endif %}
+    </section>
+
+    <section>
+        {% if albums_obj!=[] %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4>ALBUMS</h4>
+                <div class="container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Likes</th>
+                                <th>Dislikes</th>
+                                <th>Streams</th>
+                                <th>No. of Tracks</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for album, plays, likes, dislikes in albums_obj %}
+                            <tr>
+                                <td>{{ album.album_name }}</td>
+                                <td>{{ likes }}</td>
+                                <td>{{ dislikes }}</td>
+                                <td>{{ plays }}</td>
+                                <td>{{ album.no_of_tracks }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
+                                            data-bs-toggle="dropdown">
+                                            Tracks
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {% for song, album_name in songs %}
+                                            {% if album_name == album.album_name %}
+                                            <li class="dropdown-item">{{ song.track_name }}</li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <h5>No Albums published!!</h5>
+    {% endif %}
+</div>
+{% endblock %}
