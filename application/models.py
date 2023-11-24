@@ -1,5 +1,7 @@
 from .database import db
 from flask_login import UserMixin
+from werkzeug.utils import secure_filename
+import os
 
 
 class Users(UserMixin, db.Model):
@@ -20,7 +22,6 @@ class Creator(db.Model):
     no_of_singles = db.Column(db.Integer, default=0)
     no_of_albums = db.Column(db.Integer, default=0)
     songs_published = db.Column(db.Integer, default=0)
-    likes = db.Column(db.Integer, default=0)
     followers = db.Column(db.Integer, default=0)
 
 
@@ -30,7 +31,7 @@ class Tracks(db.Model):
     track_name = db.Column(db.String, nullable=False)
     artists = db.Column(db.String, nullable=False)
     creator_id = db.Column(db.String, db.ForeignKey("creator.creator_name"))
-    track_link = db.Column(db.String, nullable=False)
+    track_file = db.Column(db.String, nullable=False)
     genre = db.Column(db.String)
     lyrics = db.Column(db.String)
     duration = db.Column(db.String)

@@ -4,31 +4,35 @@
 <div class="container">
     <h4>Release a New Song!</h4>
     <br>
-    <form id="new_single" method="post">
+    <form id="new_single" method="post" enctype="multipart/form-data">
         <div class="form-floating mt-2 mb-2">
-            <input type="text" id="song_name" placeholder = "Song name" name="song_name" required="True" class="form-control">
-            <label for = "song_name"> Song Name :  </label>
-        </div>        
+            <input type="text" id="song_name" placeholder="Song name" name="song_name" required="True"
+                class="form-control">
+            <label for="song_name"> Song Name : </label>
+        </div>
         <div class="form-floating mt-2 mb-2">
-            <input type="text" id="artists" placeholder = "Artist name" name="artists" required="True" class="form-control">
+            <input type="text" id="artists" placeholder="Artist name" name="artists" required="True"
+                class="form-control">
             <label for="artists">Artists : </label>
         </div>
         <div class="form-floating mt-2 mb-2">
-            <input type="text" id="song_link" placeholder = "Song link" name="song_link" required="True" class="form-control">
-            <label for="song_link">Song link : </label>
-        </div>
-        <div class="form-floating mt-2 mb-2">
-            <input type="text" id="genre" placeholder = "Song genre" name="genre" required="True" class="form-control">
+            <input type="text" id="genre" placeholder="Song genre" name="genre" required="True" class="form-control">
             <label for="genre">Song genre : </label>
         </div>
         <div class="form-floating mt-2 mb-2">
-            <textarea id="lyrics" placeholder=" " name="lyrics" class="form-control" rows="4"></textarea>
+            <textarea id="lyrics" placeholder=" " name="lyrics" class="form-control" style="height: 75px"></textarea>
             <label for="lyrics">Lyrics :</label>
-        </div>        
+        </div>
         <div class="form-floating mt-2 mb-2">
-            <input type="text" id="duration" placeholder = "Song duration" name="duration" required="True" class="form-control">
+            <input type="text" id="duration" placeholder="Song duration" name="duration" required="True"
+                class="form-control">
             <label for="duration">Song duration : </label>
         </div>
+        <div class="mt-2 mb-2">
+            <input type="file" id="song_file" placeholder="Song file" name="song_file" required="True"
+                class="form-control" accept=".mp3, .wav, .ogg">
+        </div>
+        <br>
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
         <button class="btn-outline-light btn" type="submit" name="submit" value="True">submit</button>
     </form>

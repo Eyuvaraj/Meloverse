@@ -74,6 +74,31 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <h6>anouncements from admin, follow creators...</h6>
+    <div class="player">
+      <audio controls>
+        <source
+          src="{{ url_for('static', filename='uploads/A.R._Rahman_-_Enna_Sona_Best_Video_OK_Jaanu_Arijit_Singh_Shraddha_Kapoor_Aditya_Roy.mp3') }}"
+          type="audio/mp3">
+      </audio>
+      <div class="controls">
+        <button class="play" data-icon="P" aria-label="play pause toggle"></button>
+        <button class="stop" data-icon="S" aria-label="stop"></button>
+        <div class="timer">
+          <div></div>
+          <span aria-label="timer">00:00</span>
+        </div>
+        <button class="rwd" data-icon="B" aria-label="rewind"></button>
+        <button class="fwd" data-icon="F" aria-label="fast forward"></button>
+      </div>
+    </div>
+
+
+    <audio controls>
+      <source
+        src="{{ url_for('static', filename='uploads/A.R._Rahman_-_Enna_Sona_Best_Video_OK_Jaanu_Arijit_Singh_Shraddha_Kapoor_Aditya_Roy.mp3') }}"
+        type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
     <hr>
   </div>
 </main>

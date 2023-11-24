@@ -129,7 +129,7 @@ def creator_dashboard(user):
         if song != None and request.form.get("edit_song") == "yes":
             song_name = request.form.get("song_name")
             artists = request.form.get("artists")
-            link = request.form.get("link")
+            file = request.form.get("file")
             genre = request.form.get("genre")
             lyrics = request.form.get("lyrics")
             duration = request.form.get("duration")
@@ -139,8 +139,8 @@ def creator_dashboard(user):
                 song.track_name = song_name
             if artists != "":
                 song.artists = artists
-            if link != "":
-                song.link = link
+            if file != "":
+                song.file = file
             if genre != "":
                 song.genre = genre
             if lyrics != "":
@@ -290,14 +290,14 @@ def announcement(user):
         if announcement != "":
             creator = current_user.username
             heading = request.form.get("heading")
-            link = request.form.get("link")
+            file = request.form.get("file")
             date = datetime.now()
             new_annoucement = Announcement(
                 announcement=announcement,
                 date=date,
                 creator=creator,
                 heading=heading,
-                link=link,
+                file=file,
             )
             db.session.add(new_annoucement)
             db.session.commit()
@@ -311,18 +311,20 @@ def new_single(user):
     if request.method == "POST":
         song_name = request.form.get("song_name")
         artists = request.form.get("artists")
-        song_link = request.form.get("song_link")
         genre = request.form.get("genre")
         lyrics = request.form.get("lyrics")
         duration = request.form.get("duration")
         creator_id = current_user.id
         date = datetime.now().date()
+        file = request.files["song_file"]
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         new_song = Tracks(
             track_name=song_name,
             artists=artists,
             creator_id=creator_id,
             date_created=date,
-            track_link=song_link,
+            track_file=filename,
             genre=genre,
             lyrics=lyrics,
             duration=duration,
@@ -350,18 +352,20 @@ def add_track(user, album):
     if request.method == "POST":
         song_name = request.form.get("song_name")
         artists = request.form.get("artists")
-        song_link = request.form.get("song_link")
         genre = album.genre
         lyrics = request.form.get("lyrics")
         duration = request.form.get("duration")
         creator_id = album.creator_id
         date = datetime.now().date()
+        file = request.files["song_file"]
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         new_track = Tracks(
             track_name=song_name,
             artists=artists,
             creator_id=creator_id,
             date_created=date,
-            track_link=song_link,
+            track_file=filename,
             genre=genre,
             lyrics=lyrics,
             duration=duration,
