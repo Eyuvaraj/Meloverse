@@ -16,8 +16,16 @@ user = Blueprint("user", __name__)
 def user_dashboard(user):
     alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
+    tracks = (
+        db.session.query(Tracks, Creator.creator_name)
+        .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .all()
+    )
     return render_template(
-        "user/user_dashboard.html", creator_signup_status=creator, alert=alert
+        "user/user_dashboard.html",
+        creator_signup_status=creator,
+        alert=alert,
+        tracks=tracks,
     )
 
 
