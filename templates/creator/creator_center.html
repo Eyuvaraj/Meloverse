@@ -3,7 +3,6 @@
 {% block head %}
 <title>Meloverse | Creator Center</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/headerfooter.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/otherelements.css') }}">
 {% endblock %}
 
 {% block navbar %}
@@ -63,7 +62,7 @@
       <h3>Release an album or single to view this page</h3>
       <a href="{{ url_for('user.new', user=current_user.username) }}">Go to Release song/album page</a>
       {% else %}
-      <div class="card">
+      <div class="card border-dark mb-3">
         <div class="card-body">
           <h5 class="card-title">STATS</h5>
           <hr>
@@ -133,7 +132,7 @@
     <br>
     {% if songs_published!=0 %}
     <section>
-      <div class="card">
+      <div class="card border-dark mb-3">
         <div class="card-body">
           <h5 class="card-title">MY SONGS</h5>
           <hr>
@@ -180,11 +179,6 @@
                               <label for="artists">Artists :</label>
                               <input type="text" id="artists" placeholder="Artist name" name="artists" required="True"
                                 class="form-control" value="{{ song.artists }}">
-                            </div>
-                            <div class="form-group mt-2 mb-2">
-                              <label for="link">Song link :</label>
-                              <input type="text" id="link" placeholder="link" name="link" required="True"
-                                class="form-control" value="{{ song.track_link }}">
                             </div>
                             <div class="form-group mt-2 mb-2">
                               <label for="genre">Genre :</label>
@@ -278,11 +272,6 @@
                                 class="form-control" value="{{ song.artists }}">
                             </div>
                             <div class="form-group mt-2 mb-2">
-                              <label for="link">Song link :</label>
-                              <input type="text" id="link" placeholder="link" name="link" required="True"
-                                class="form-control" value="{{ song.track_link }}">
-                            </div>
-                            <div class="form-group mt-2 mb-2">
                               <label for="genre">Genre :</label>
                               <input type="text" id="genre" placeholder="Genre" name="genre" required="True"
                                 class="form-control" value="{{ song.genre }}">
@@ -349,7 +338,7 @@
     {% endif %}
     {% if albums_published!=0 %}
     <section>
-      <div class="card">
+      <div class="card border-dark mb-3">
         <div class="card-body">
           <h5 class="card-title">MY ALBUMS</h5>
           <hr>

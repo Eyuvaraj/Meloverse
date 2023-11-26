@@ -73,36 +73,97 @@
       {% endif %}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div class="row">
-      {% for track,creator in tracks %}
-      <div class="col-4">
-        <div class="card mb-3">
-          <div class="card-header">{{ creator }}</div>
-          <div class="card-body">
-            <h5 class="card-title">{{ track.track_name }}</h5>
-            <a href="#" class="stretched-link" data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvasScrolling_{{ track.track_id }}"></a>
-            <div class="offcanvas offcanvas-bottom" style="height: 20vh;" data-bs-scroll="true" data-bs-backdrop="false"
-              tabindex="-1" id="offcanvasScrolling_{{ track.track_id }}">
-              <div class="container">
-                <div class="offcanvas-header">
-                  <a href="{{ url_for('user.creator_profile', user=current_user, creator=track.creator_id)}}"
-                    style="text-decoration: none;">
-                    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{{ track.track_name }} - {{ creator }}</h5>
-                  </a>
-                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+    <div class="card border-dark mb-3">
+      <div class="card-body">
+        <h5 class="card-title">LISTEN TO ALBUMS</h5>
+        <hr>
+        <div class="row">
+          {% for item in albums %}
+          {% if item %}
+          <div class="col-4">
+            <div class="card mb-3">
+              {% for album, y, creator in item %}
+              {% if loop.first %}
+              <div class="card-header">{{ creator }}</div>
+              <div class="card-body">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle card-title btn btn-dark" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                    {{ album.album_name }}
+                  </button>
+                  <ul class="dropdown-menu">
+                    {% for x, track, z in item %}
+                    <li><a class="dropdown-item" href="#">{{ track.track_name }}</a></li>
+                    {% endfor %}
+                  </ul>
                 </div>
-                <div class="offcanvas-body" style="padding: 4px;">
-                  <audio controls>
-                    <source src="{{ url_for('static', filename='uploads/' + track.track_file) }}" type="audio/mp3">
-                  </audio>
+              </div>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-dark mb-3">
+      <div class="card-body">
+        <h5 class="card-title">LISTEN TO SINGLES</h5>
+        <hr>
+
+        <div class="row">
+          {% for track,creator in singles %}
+
+          <div class="col-4">
+            <div class="card mb-3">
+              <div class="card-header">{{ creator }}</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ track.track_name }}</h5>
+                <a href="#" class="stretched-link" data-bs-toggle="offcanvas"
+                  data-bs-target="#offcanvasScrolling_{{ track.track_id }}"></a>
+
+                <div class="offcanvas offcanvas-bottom" style="height: 15vh;" data-bs-scroll="true"
+                  data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling_{{ track.track_id }}">
+                  <div class="container">
+                    <div class="offcanvas-body" style="padding: 10px;">
+                      <div class="row g-0">
+                        <div class="col-1 d-flex align-items-stretch">
+                          <img src="{{ url_for('static', filename='images/tom.gif') }}"
+                            class="img-fluid rounded unclickable undraggable" style="object-fit: cover;">
+                        </div>
+                        <div class="col-2">
+                          <h5 class="offcanvas-title">{{ track.track_name }}</h5>
+                          <span>
+                            <h6 class="text-muted">{{ track.artists }},
+                              <a href="{{ url_for('user.creator_profile', user=current_user, creator=track.creator_id)}}"
+                                style="text-decoration: none;">
+                                {{ creator }}
+                              </a>
+                            </h6>
+                          </span>
+                        </div>
+                        <div class="col-8">
+                          <audio controls>
+                            <source src="{{ url_for('static', filename='uploads/' + track.track_file) }}"
+                              type="audio/mp3">
+                          </audio>
+                        </div>
+                        <div class="col-1 text-end">
+                          <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas"></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          {% endfor %}
         </div>
       </div>
-      {% endfor %}
     </div>
     <hr>
     <br><br><br>

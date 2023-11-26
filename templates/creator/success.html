@@ -1,9 +1,9 @@
 {% extends 'creator/creator_center.html' %}
 
 {% block body %}
-    <div style="text-align: center;">
-        <img src="{{ url_for('static', filename='dancing cat.gif') }}">
-        <h3>Your {{ song_or_album }} has been published🔥</h3>
-        <a href="{{ url_for("user.creator_dashboard", user=current_user.username) }}">Go back</a>
-    </div>
+<div style="text-align: center;">
+    <img src="{{ url_for('static', filename='dancing cat.gif') }}" class="img unclickable undraggable">
+    <h3>Your {{ song_or_album }} has been published🔥</h3>
+    <a href="{{ url_for('user.creator_dashboard', user=current_user.username) }}">Go back</a>
+</div>
 {% endblock %}

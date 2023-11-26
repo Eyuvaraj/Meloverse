@@ -7,8 +7,20 @@ from application.app_controllers import auth
 from datetime import datetime
 from sqlalchemy import text, func
 from sqlalchemy.orm import aliased
+import random
 
 user = Blueprint("user", __name__)
+
+
+def get_album(album_id):
+    album = (
+        db.session.query(Album, Tracks, Creator.creator_name)
+        .filter(Album.album_id == album_id)
+        .join(Album, Album.album_id == Tracks.album_id)
+        .join(Creator, Creator.creator_id == Album.creator_id)
+        .all()
+    )
+    return album
 
 
 @user.route("/user/<user>/home", methods=["GET", "POST"])
@@ -16,16 +28,30 @@ user = Blueprint("user", __name__)
 def user_dashboard(user):
     alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
-    tracks = (
+    album_count = Album.query.count()
+    track_count = abs(Tracks.query.count() - 9)
+    random_tracks_no = random.randint(9, track_count)
+    singles = (
         db.session.query(Tracks, Creator.creator_name)
+        .filter(Tracks.album_id == 0, Tracks.track_id >= random_tracks_no)
         .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .limit(9)
         .all()
     )
+
+    albums = []
+    while len(albums) <= 2:
+        random_album_no = random.randint(1, album_count)
+        temp = get_album(random_album_no)
+        if temp != []:
+            albums.append(temp)
+
     return render_template(
         "user/user_dashboard.html",
         creator_signup_status=creator,
         alert=alert,
-        tracks=tracks,
+        singles=singles,
+        albums=albums,
     )
 
 
@@ -115,11 +141,13 @@ def creator_dashboard(user):
         if song != None and request.form.get("delete_song") == "yes":
             db.session.delete(song)
             creator.songs_published -= 1
-            if song.album_id == "Null":
+            if song.album_id == 0 or song.album_id == "0":
                 creator.no_of_singles -= 1
             else:
                 album = Album.query.filter_by(album_id=song.album_id).first()
                 album.no_of_tracks -= 1
+                if album.no_of_tracks == 0:
+                    db.session.delete(album)
         db.session.commit()
 
         album_id = request.form.get("album_id")
@@ -137,7 +165,6 @@ def creator_dashboard(user):
         if song != None and request.form.get("edit_song") == "yes":
             song_name = request.form.get("song_name")
             artists = request.form.get("artists")
-            file = request.form.get("file")
             genre = request.form.get("genre")
             lyrics = request.form.get("lyrics")
             duration = request.form.get("duration")
@@ -147,8 +174,6 @@ def creator_dashboard(user):
                 song.track_name = song_name
             if artists != "":
                 song.artists = artists
-            if file != "":
-                song.file = file
             if genre != "":
                 song.genre = genre
             if lyrics != "":
@@ -175,7 +200,7 @@ def creator_dashboard(user):
 
     id = current_user.id
     albums = Album.query.filter_by(creator_id=id).all()
-    singles = Tracks.query.filter_by(creator_id=id, album_id="Null").all()
+    singles = Tracks.query.filter_by(creator_id=id, album_id=0).all()
     songs = (
         db.session.query(Tracks, Album.album_name)
         .join(Album, Tracks.album_id == Album.album_id)
@@ -464,9 +489,7 @@ def creator_profile(user, creator):
         fan_id=current_user.id, fan_of=creator.creator_id
     ).first()
 
-    singles = Tracks.query.filter_by(
-        creator_id=creator.creator_id, album_id="Null"
-    ).all()
+    singles = Tracks.query.filter_by(creator_id=creator.creator_id, album_id=0).all()
 
     songs = (
         db.session.query(Tracks, Album.album_name)

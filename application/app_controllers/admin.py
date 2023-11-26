@@ -85,7 +85,7 @@ def creator_profile(user, creator):
         if song != None and request.form.get("delete_song") == "yes":
             db.session.delete(song)
             creator.songs_published -= 1
-            if song.album_id == "Null":
+            if song.album_id == 0:
                 creator.no_of_singles -= 1
             else:
                 album = Album.query.filter_by(album_id=song.album_id).first()
@@ -106,9 +106,7 @@ def creator_profile(user, creator):
 
         print(request.form)
 
-    singles = Tracks.query.filter_by(
-        creator_id=creator.creator_id, album_id="Null"
-    ).all()
+    singles = Tracks.query.filter_by(creator_id=creator.creator_id, album_id=0).all()
 
     songs = (
         db.session.query(Tracks, Album.album_name)

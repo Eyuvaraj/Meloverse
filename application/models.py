@@ -36,7 +36,7 @@ class Tracks(db.Model):
     lyrics = db.Column(db.String)
     duration = db.Column(db.String)
     date_created = db.Column(db.Date)
-    album_id = db.Column(db.String, default="Null")
+    album_id = db.Column(db.Integer, default=0)
     likes = db.Column(db.Integer, default=0)
     dislikes = db.Column(db.Integer, default=0)
     plays = db.Column(db.Integer, default=0)
@@ -57,7 +57,7 @@ class Playlist(db.Model):
     __tablename__ = "playlist"
     playlist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     playlist_name = db.Column(db.String)
-    user = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 
 class User_Playlist(db.Model):
