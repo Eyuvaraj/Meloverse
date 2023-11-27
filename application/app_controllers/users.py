@@ -1,4 +1,13 @@
-from flask import redirect, url_for, render_template, request, Flask, flash, Blueprint
+from flask import (
+    redirect,
+    url_for,
+    render_template,
+    request,
+    Flask,
+    flash,
+    Blueprint,
+    jsonify,
+)
 from flask import current_app as app
 from ..database import db
 from ..models import *

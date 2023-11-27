@@ -83,7 +83,7 @@
           {% if item %}
           <div class="col-4">
             <div class="card mb-3">
-              {% for album, y, creator in item %}
+              {% for album, track_, creator in item %}
               {% if loop.first %}
               <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
                 style="text-decoration: none;">
@@ -95,9 +95,17 @@
                     data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
                     {{ album.album_name }}
                   </button>
-                  <ul class="dropdown-menu">
-                    {% for x, track, z in item %}
-                    <li><a class="dropdown-item" href="#">{{ track.track_name }}</a></li>
+                  <ul class="dropdown-menu track-dropdown">
+                    {% for album_, track, creator_ in item %}
+                    <li>
+                      <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                        data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                        data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
+                        data-current-user-name="{{ current_user.username }}"
+                        data-current-user-id="{{ current_user.id }}" data-track-file="{{ track.track_file }}">
+                        {{ track.track_name }}
+                      </a>
+                    </li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -126,45 +134,12 @@
                 style="text-decoration: none;">
                 <div class="card-header">{{ creator.creator_name }}</div>
               </a>
-              <div class="card-body">
-                <a href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling_{{ track.track_id }}"
-                  class="link-light" style="text-decoration: none;">
-                  <h5 class="card-title">{{ track.track_name }}</h5>
-                </a>
-
-                <div class="offcanvas offcanvas-bottom" style="height: 15vh;" data-bs-scroll="true"
-                  data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling_{{ track.track_id }}">
-                  <div class="container">
-                    <div class="offcanvas-body" style="padding: 10px;">
-                      <div class="row g-0">
-                        <div class="col-1 d-flex align-items-stretch">
-                          <img src="{{ url_for('static', filename='images/tom.gif') }}"
-                            class="img-fluid rounded unclickable undraggable" style="object-fit: cover;">
-                        </div>
-                        <div class="col-2">
-                          <h5 class="offcanvas-title">{{ track.track_name }}</h5>
-                          <span>
-                            <h6 class="text-muted">{{ track.artists }},
-                              <a href="{{ url_for('user.creator_profile', user=current_user, creator=track.creator_id) }}"
-                                style="text-decoration: none;">
-                                {{ creator.creator_name }}
-                              </a>
-                            </h6>
-                          </span>
-                        </div>
-                        <div class="col-8">
-                          <audio controls>
-                            <source src="{{ url_for('static', filename='uploads/' + track.track_file) }}"
-                              type="audio/mp3">
-                          </audio>
-                        </div>
-                        <div class="col-1 text-end">
-                          <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas"></button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
+                data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
+                data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
+                data-creator="{{ creator.creator_name }}" data-current-user-name="{{ current_user.username }}"
+                data-current-user-id="{{ current_user.id }}">
+                <h5 class="card-title">{{ track.track_name }}</h5>
               </div>
             </div>
           </div>
@@ -179,10 +154,91 @@
 {% endblock %}
 
 {% block footer %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var links = document.querySelectorAll('.card-body.stretched-link');
+    links.forEach(function (link) {
+      link.addEventListener('click', function () {
+        var trackName = this.dataset.trackName;
+        var artists = this.dataset.artists;
+        var creatorId = this.dataset.creatorid;
+        var creator = this.dataset.creator;
+        var currentUser = this.dataset.currentUserName;
+        var currentUserId = this.dataset.currentUserId;
+
+        var trackFile = "{{ url_for('static', filename='uploads/') }}" + this.dataset.trackFile;
+        var footer = document.getElementById('footer');
+        var stickyFooter = document.querySelector('.sticky-footer');
+
+        var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
+
+        document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
+
+        document.getElementById('selected-track-name').innerText = trackName;
+        document.getElementById('audio-player').src = trackFile;
+
+        footer.style.display = 'block';
+        stickyFooter.style.display = 'block';
+      });
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var albumLinks = document.querySelectorAll('.track-dropdown .dropdown-item');
+
+    albumLinks.forEach(function (item) {
+      item.addEventListener('click', function (event) {
+        event.preventDefault();
+        var selectedOption = this;
+        var trackName = selectedOption.dataset.trackName;
+        var artists = selectedOption.dataset.artists;
+        var creatorId = selectedOption.dataset.creatorId;
+        var creator = selectedOption.dataset.creator;
+        var currentUser = selectedOption.dataset.currentUserName;
+        var currentUserId = selectedOption.dataset.currentUserId;
+        var trackFile = "{{ url_for('static', filename='uploads/') }}" + selectedOption.dataset.trackFile;
+        var footer = document.getElementById('footer');
+        var stickyFooter = document.querySelector('.sticky-footer');
+
+        console.log('Selected Track:', creator);
+
+        var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
+
+        document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
+
+        document.getElementById('selected-track-name').innerText = trackName;
+        document.getElementById('audio-player').src = trackFile;
+
+        footer.style.display = 'block';
+        stickyFooter.style.display = 'block';
+      });
+    });
+  });
+</script>
+
 <br>
-<footer class="footer mt-auto py-3 bg-body-tertiary" style="position: sticky; bottom: 0;">
+<footer id="footer" class="footer mt-auto py-3 bg-body-tertiary" style="position: sticky; bottom: 0; display: none;">
   <div class="container">
-    <span class="text-body-secondary">Place sticky footer content here.</span>
+    <div class="row g-0">
+      <div class="col-1 d-flex align-items-stretch">
+        <img src="{{ url_for('static', filename='images/tom.gif') }}" class="img-fluid rounded unclickable undraggable"
+          style="object-fit: cover;">
+      </div>
+      <div class="col-2">
+        <h5 class="offcanvas-title" id="selected-track-name"></h5>
+        <span>
+          <h6 class="text-muted" id="track-details"></h6>
+        </span>
+      </div>
+      <div class="col-8">
+        <audio controls id="audio-player">
+          <source src="" type="audio/mp3">
+        </audio>
+      </div>
+      <div class="col-1 text-end">
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas"></button>
+      </div>
+    </div>
   </div>
 </footer>
 {% endblock %}
