@@ -2,10 +2,12 @@
 
 {% block body %}
 <div class="container">
-    {% for i in announcements %}
+    {% for i,j in announcements %}
     <div class="card">
         <h5 class="card-header text-uppercase">
-            😊 {{ i.creator }}
+            <a href="{{ url_for('user.creator_profile', user=current_user, creator=j.creator_id) }}"
+                style="text-decoration: none;">😊 {{ i.creator }}
+            </a>
             <span class="badge">{{ i.date }}</span>
         </h5>
         <div class="card-body">
@@ -22,13 +24,13 @@
                         <input type="hidden" name="reaction" value="like">
                         <button type="submit" class="btn btn-outline-light btn-sm">👍 {{ i.likes }}</button>
                     </form>
-                
+
                     <form method="post">
                         <input type="hidden" name="announcement_id" value="{{ i.announcement_id }}">
                         <input type="hidden" name="reaction" value="dislike">
                         <button type="submit" class="btn btn-outline-light btn-sm">👎 {{ i.dislikes }}</button>
                     </form>
-                </div>                              
+                </div>
             </div>
         </div>
     </div>

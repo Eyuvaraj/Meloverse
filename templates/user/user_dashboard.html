@@ -85,7 +85,10 @@
             <div class="card mb-3">
               {% for album, y, creator in item %}
               {% if loop.first %}
-              <div class="card-header">{{ creator }}</div>
+              <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                style="text-decoration: none;">
+                <div class="card-header">{{ creator.creator_name }}</div>
+              </a>
               <div class="card-body">
                 <div class="dropdown">
                   <button class="btn btn-secondary dropdown-toggle card-title btn btn-dark" type="button"
@@ -119,11 +122,15 @@
 
           <div class="col-4">
             <div class="card mb-3">
-              <div class="card-header">{{ creator }}</div>
+              <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                style="text-decoration: none;">
+                <div class="card-header">{{ creator.creator_name }}</div>
+              </a>
               <div class="card-body">
-                <h5 class="card-title">{{ track.track_name }}</h5>
-                <a href="#" class="stretched-link" data-bs-toggle="offcanvas"
-                  data-bs-target="#offcanvasScrolling_{{ track.track_id }}"></a>
+                <a href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling_{{ track.track_id }}"
+                  class="link-light" style="text-decoration: none;">
+                  <h5 class="card-title">{{ track.track_name }}</h5>
+                </a>
 
                 <div class="offcanvas offcanvas-bottom" style="height: 15vh;" data-bs-scroll="true"
                   data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling_{{ track.track_id }}">
@@ -138,9 +145,9 @@
                           <h5 class="offcanvas-title">{{ track.track_name }}</h5>
                           <span>
                             <h6 class="text-muted">{{ track.artists }},
-                              <a href="{{ url_for('user.creator_profile', user=current_user, creator=track.creator_id)}}"
+                              <a href="{{ url_for('user.creator_profile', user=current_user, creator=track.creator_id) }}"
                                 style="text-decoration: none;">
-                                {{ creator }}
+                                {{ creator.creator_name }}
                               </a>
                             </h6>
                           </span>
@@ -172,9 +179,10 @@
 {% endblock %}
 
 {% block footer %}
-<!-- <footer class="footer mt-auto py-3 bg-body-tertiary">
+<br>
+<footer class="footer mt-auto py-3 bg-body-tertiary" style="position: sticky; bottom: 0;">
   <div class="container">
     <span class="text-body-secondary">Place sticky footer content here.</span>
   </div>
-</footer> -->
+</footer>
 {% endblock %}

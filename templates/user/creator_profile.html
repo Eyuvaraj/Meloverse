@@ -2,18 +2,27 @@
 
 {% block body %}
 <div class="container">
-    <small><a href="{{ url_for('user.user_dashboard', user=current_user.username) }}"> <--go back </a></small>
     <section>
         <div class="card mb-3">
             <div class="row g-0">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <img src="{{ url_for('static', filename='avatar3.jpg') }}" class="img-fluid rounded-start">
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-9">
                     <div class="card-body">
-                        <h5 class="card-title">{{ creator.creator_name }} | <small><span
-                                    class="badge rounded-pill bg-info text-dark"> {{
-                                    creator.followers }} followers</span></small></h5>
+                        <h5 class="card-title d-flex justify-content-between">
+                            <span>
+                                {{ creator.creator_name }} |
+                                <small><span class="badge rounded-pill bg-info text-dark">{{ creator.followers }}
+                                        followers</span></small>
+                            </span>
+                            <span>
+                                <small class="text-end">
+                                    <a href="{{ url_for('user.user_dashboard', user=current_user.username) }}"
+                                        class="btn btn-outline-secondary btn-sm">Go back</a>
+                                </small>
+                            </span>
+                        </h5>
                         <p class="card-text">{{ creator.bio }}</p>
                         <p class="card-text"><small class="text-muted">Albums: {{ creator.no_of_albums }} |
                                 Singles: {{ creator.no_of_singles }}</small></p>

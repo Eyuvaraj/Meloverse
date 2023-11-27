@@ -14,7 +14,7 @@ user = Blueprint("user", __name__)
 
 def get_album(album_id):
     album = (
-        db.session.query(Album, Tracks, Creator.creator_name)
+        db.session.query(Album, Tracks, Creator)
         .filter(Album.album_id == album_id)
         .join(Album, Album.album_id == Tracks.album_id)
         .join(Creator, Creator.creator_id == Album.creator_id)
@@ -32,7 +32,7 @@ def user_dashboard(user):
     track_count = abs(Tracks.query.count() - 9)
     random_tracks_no = random.randint(9, track_count)
     singles = (
-        db.session.query(Tracks, Creator.creator_name)
+        db.session.query(Tracks, Creator)
         .filter(Tracks.album_id == 0, Tracks.track_id >= random_tracks_no)
         .join(Creator, Tracks.creator_id == Creator.creator_id)
         .limit(9)
@@ -123,8 +123,13 @@ def discover(user):
 
         db.session.commit()
     announcements = (
-        Announcement.query.order_by(Announcement.date.desc()).limit(10).all()
+        db.session.query(Announcement, Creator)
+        .join(Announcement, Announcement.creator == Creator.creator_name)
+        .order_by(Announcement.date.desc())
+        .limit(10)
+        .all()
     )
+
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template(
         "user/discover.html", announcements=announcements, creator_signup_status=creator
@@ -466,7 +471,7 @@ def new_album(user):
 @user.route("user/<user>/creator/<creator>", methods=["GET", "POST"])
 @login_required
 def creator_profile(user, creator):
-    creator = Creator.query.filter_by(creator_id=current_user.id).first()
+    creator = Creator.query.filter_by(creator_id=creator).first()
     if request.method == "POST":
         reaction = request.form.get("reaction")
         if reaction == "follow":

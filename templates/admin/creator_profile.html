@@ -2,7 +2,6 @@
 
 {% block body %}
 <div class="container">
-    <small><a href="{{ url_for('admin.user_management', user=current_user.username) }}"> <--go back </a></small>
     <section>
         <div class="card mb-3">
             <div class="row g-0">
@@ -11,7 +10,21 @@
                 </div>
                 <div class="col-md-10">
                     <div class="card-body">
-                        <h5 class="card-title">{{ creator.creator_name }}</h5>
+                        <h5 class="card-title d-flex justify-content-between">
+                            <span>
+                                {{ creator.creator_name }} |
+                                <small><span class="badge rounded-pill bg-info text-dark">{{ creator.followers }}
+                                        followers</span></small>
+                            </span>
+                            <span>
+                                <small class="text-end">
+                                    {% if request.referrer %}
+                                    <a href="{{ request.referrer }}" class="btn btn-outline-secondary btn-sm">Go
+                                        back</a>
+                                    {% endif %}
+                                </small>
+                            </span>
+                        </h5>
                         <p class="card-text">{{ creator.bio }}</p>
                         <p class="card-text"><small class="text-muted">Albums: {{ creator.no_of_albums }} |
                                 Singles: {{ creator.no_of_singles }}</small></p>
