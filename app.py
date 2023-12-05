@@ -6,6 +6,7 @@ from application.config import LocalDevelopmentConfig
 from application.database import db
 from flask import Blueprint
 from flask_migrate import Migrate
+from application.api import *
 
 app = None
 api = None
@@ -40,8 +41,8 @@ def create_app():
 
 
 app, api = create_app()
+api.add_resource(SongAPI, "/song")
 
-# Import all the controllers so they are loaded
 from application.index import *
 
 if __name__ == "__main__":

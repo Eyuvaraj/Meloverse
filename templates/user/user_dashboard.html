@@ -22,10 +22,10 @@
             class="nav-link px-2 link-body-emphasis">Discover</a></li>
       </ul>
 
-
-      <form class="nav-item" role="search">
+      <form class="nav-item" role="search" method="post"
+        action="{{ url_for('user.search', user=current_user.username) }}">
         <div class="input-group">
-          <input type="search" class="form-control mr-2" placeholder="Search..." aria-label="Search">
+          <input type="search" class="form-control mr-2" name="search" placeholder="Search...">
           <button type="submit" class="btn btn-primary">Search</button>
         </div>
       </form>
@@ -76,7 +76,9 @@
 
     <div class="card border-dark mb-3">
       <div class="card-body">
-        <h5 class="card-title">LISTEN TO ALBUMS</h5>
+        <h4 class="card-title">RECOMENDATIONS FOR YOU</h4>
+        <hr>
+        <h5 class="card-title">ALBUMS</h5>
         <hr>
         <div class="row">
           {% for item in albums %}
@@ -122,7 +124,7 @@
 
     <div class="card border-dark mb-3">
       <div class="card-body">
-        <h5 class="card-title">LISTEN TO SINGLES</h5>
+        <h5 class="card-title">SINGLES</h5>
         <hr>
 
         <div class="row">
@@ -235,10 +237,19 @@
           <source src="" type="audio/mp3">
         </audio>
       </div>
-      <div class="col-1 text-end">
-        <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas"></button>
-      </div>
     </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var clickableElements = document.querySelectorAll('.clickable-element');
+
+      clickableElements.forEach(function (element) {
+        element.addEventListener('click', function (event) {
+          // Stop the click event from propagating up the DOM hierarchy
+          event.stopPropagation();
+        });
+      });
+    });
+  </script>
 </footer>
 {% endblock %}

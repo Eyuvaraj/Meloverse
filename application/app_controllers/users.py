@@ -32,7 +32,26 @@ def get_album(album_id):
     return album
 
 
-@user.route("/user/<user>/home", methods=["GET", "POST"])
+def search_query(query):
+    creators = Creator.query.filter(Creator.creator_name.ilike(f"%{query}%")).all()
+    albums = (
+        db.session.query(Album, Tracks, Creator)
+        .filter(Album.album_name.ilike(f"%{query}%"))
+        .join(Tracks, Album.album_id == Tracks.album_id)
+        .join(Creator, Album.creator_id == Creator.creator_id)
+        .all()
+    )
+    tracks = (
+        db.session.query(Tracks, Creator, Album)
+        .filter(Tracks.track_name.ilike(f"%{query}%"))
+        .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .outerjoin(Album, Tracks.album_id == Album.album_id)
+        .all()
+    )
+    return creators, albums, tracks
+
+
+@user.route("/meloverse/u/<user>/home", methods=["GET", "POST"])
 @login_required
 def user_dashboard(user):
     alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
@@ -64,7 +83,7 @@ def user_dashboard(user):
     )
 
 
-@user.route("user/<user>/creator_signup", methods=["GET", "POST"])
+@user.route("/meloverse/u/<user>/creator_signup", methods=["GET", "POST"])
 @login_required
 def creator_signup(user):
     if request.method == "POST":
@@ -80,21 +99,21 @@ def creator_signup(user):
     return render_template("user/creator_signup.html", creator_signup_status=creator)
 
 
-@user.route("user/<user>/favorites", methods=["GET", "POST"])
+@user.route("/meloverse/u/<user>/favorites", methods=["GET", "POST"])
 @login_required
 def favorites(user):
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template("user/favorites.html", creator_signup_status=creator)
 
 
-@user.route("user/<user>/my_playlists", methods=["GET", "POST"])
+@user.route("/meloverse/u/<user>/my_playlists", methods=["GET", "POST"])
 @login_required
 def user_playlists(user):
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template("user/user_playlists.html", creator_signup_status=creator)
 
 
-@user.route("user/<user>/discover", methods=["GET", "POST"])
+@user.route("/meloverse/u/<user>/discover", methods=["GET", "POST"])
 @login_required
 def discover(user):
     if request.method == "POST":
@@ -142,6 +161,23 @@ def discover(user):
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template(
         "user/discover.html", announcements=announcements, creator_signup_status=creator
+    )
+
+
+@user.route("/meloverse/u/<user>/search/", methods=["GET", "POST"])
+@login_required
+def search(user):
+    if request.method == "POST":
+        query = request.form.get("search")
+        creators, albums, tracks = search_query(query)
+        for i in creators:
+            print(i)
+        for i in albums:
+            print(i)
+        for i in tracks:
+            print(i)
+    return render_template(
+        "user/search.html", creators=creators, albums=albums, tracks=tracks, query=query
     )
 
 

@@ -16,6 +16,26 @@ from sqlalchemy.orm import aliased
 admin = Blueprint("admin", __name__)
 
 
+def search_result(query):
+    creators = Creator.query.filter(Creator.creator_name.ilike(f"%{query}%")).all()
+    albums = (
+        db.session.query(Album, Tracks, Creator)
+        .filter(Album.album_name.ilike(f"%{query}%"))
+        .join(Album, Album.album_id == Tracks.album_id)
+        .join(Creator, Album.creator_id == Creator.creator_id)
+        .all()
+    )
+    songs = (
+        db.session.query(Tracks, Creator, Album)
+        .filter(Tracks.track_name.ilike(f"%{query}%"))
+        .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .outerjoin(Album, Album.album_id == Tracks.album_id)
+        .all()
+    )
+
+    return creators, albums, songs
+
+
 @admin.route("/admin/<user>/home", methods=["GET", "POST"])
 @login_required
 def admin_dashboard(user):
@@ -144,4 +164,14 @@ def creator_profile(user, creator):
         albums_obj=album_obj,
         singles=singles,
         songs=songs,
+    )
+
+
+@admin.route("/admin/a/<user>/search", methods=["POST", "GET"])
+@login_required
+def search(user):
+    query = request.form.get("search")
+    creators, albums, songs = search_result(query)
+    return render_template(
+        "admin/search.html", creators=creators, albums=albums, tracks=songs, query=query
     )

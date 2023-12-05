@@ -1,35 +1,58 @@
-from flask_restful import Resource, Api
-from flask_restful import fields, marshal_with
-from flask_restful import reqparse
+from flask_restful import Resource, reqparse, fields, marshal_with
 from application.validation import BusinessValidationError, NotFoundError
-from application.models import User
-from application.database import db
-from flask import current_app as app
-import werkzeug
-from flask import abort
+from application.models import Users, Tracks, Creator
+from flask import request, abort, jsonify
 
-create_user_parser = reqparse.RequestParser()
-create_user_parser.add_argument('username')
-create_user_parser.add_argument('email')
+# get_song = reqparse.RequestParser()
+# get_song.add_argument("user_id", type=int, required=True, help="User ID is required")
+# get_song.add_argument("song_id", type=int, required=True, help="Song ID is required")
 
-update_user_parser = reqparse.RequestParser()
-update_user_parser.add_argument('email')
+# resource_fields = {
+#     "song_id": fields.Integer,
+#     "song_name": fields.String,
+#     "user_id": fields.Integer,
+#     "creator": fields.Nested(
+#         {
+#             "creator_id": fields.Integer,
+#             "creator_name": fields.String,
+#             # Add other fields you want to include from the Creator model
+#         }
+#     ),
+# }
 
-resource_fields = {
-    'user_id':   fields.Integer,
-    'username':    fields.String,
-    'email':    fields.String
-}
+
+class SongAPI(Resource):
+    def get(self):
+        user_id = request.args.get("user_id")
+        song_id = request.args.get("song_id")
+
+        user = Users.query.get(user_id)
+        song = Tracks.query.get(song_id)
+        creator = Creator.query.get(song.creator_id)
+
+        # Check if user, song, and creator exist
+        if not user or not song or not creator:
+            return jsonify({"message": "User, song, or creator not found"}), 404
+
+        # Create a nested structure with column names and values
+        user_data = {
+            column.name: getattr(user, column.name)
+            for column in Users.__table__.columns
+        }
+        song_data = {
+            column.name: getattr(song, column.name)
+            for column in Tracks.__table__.columns
+        }
+        creator_data = {
+            column.name: getattr(creator, column.name)
+            for column in Creator.__table__.columns
+        }
+
+        # Return the nested structure
+        return jsonify({"song": song_data, "user": user_data, "creator": creator_data})
 
 
-class UserAPI(Resource):
-    @marshal_with(resource_fields)
-    def get(self, username):
-        user = db.session.query(User).filter(User.username == username).first()
-        if user is None:
-            raise NotFoundError(status_code=404)
-        return user
-
+"""
     def put(self, username):
         args = update_user_parser.parse_args()
         return {'hello': 'world'}        
@@ -61,4 +84,5 @@ class UserAPI(Resource):
         return new_user                
 
     def delete(self, username):
-        return {'hello': 'world'}                        
+        return {'hello': 'world'}
+"""
