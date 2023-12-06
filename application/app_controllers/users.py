@@ -48,7 +48,14 @@ def search_query(query):
         .outerjoin(Album, Tracks.album_id == Album.album_id)
         .all()
     )
-    return creators, albums, tracks
+    genre = (
+        db.session.query(Tracks, Creator, Album)
+        .filter(Tracks.genre.ilike(f"%{query}%"))
+        .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .outerjoin(Album, Tracks.album_id == Album.album_id)
+        .all()
+    )
+    return creators, albums, tracks, genre
 
 
 @user.route("/meloverse/u/<user>/home", methods=["GET", "POST"])
@@ -169,15 +176,15 @@ def discover(user):
 def search(user):
     if request.method == "POST":
         query = request.form.get("search")
-        creators, albums, tracks = search_query(query)
-        for i in creators:
-            print(i)
-        for i in albums:
-            print(i)
-        for i in tracks:
-            print(i)
+        creators, albums, tracks, genre = search_query(query)
+
     return render_template(
-        "user/search.html", creators=creators, albums=albums, tracks=tracks, query=query
+        "user/search.html",
+        creators=creators,
+        albums=albums,
+        tracks=tracks,
+        query=query,
+        genre=genre,
     )
 
 

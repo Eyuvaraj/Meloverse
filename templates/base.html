@@ -5,9 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/plyr.css') }}">
   <script src="{{ url_for('static', filename='bootstrap/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='bootstrap/color-modes.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/audio.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/plyr.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/audio_req.js') }}"></script>
   <script src="{{ url_for('static', filename='bootstrap/jquery-3.7.1.min.js') }}"></script>
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -18,6 +20,7 @@
 </head>
 
 <body>
+
   {% block navbar %}
   {% endblock %}
 

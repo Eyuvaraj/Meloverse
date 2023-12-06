@@ -69,6 +69,9 @@
 
 {% block footer %}
 <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const player = new Plyr('#audio-player');
+  });
   document.addEventListener('DOMContentLoaded', function () {
     var links = document.querySelectorAll('.card-body.stretched-link');
     links.forEach(function (link) {
@@ -139,7 +142,7 @@
           style="object-fit: cover;">
       </div>
       <div class="col-2">
-        <h5 class="offcanvas-title" id="selected-track-name"></h5>
+        <h4 class="offcanvas-title" id="selected-track-name"></h4>
         <span>
           <h6 class="text-muted" id="track-details"></h6>
         </span>

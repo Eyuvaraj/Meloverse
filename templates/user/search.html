@@ -4,7 +4,7 @@
 <div class="container">
     <div class="card border-dark mb-3 mt-3">
         <div>
-            {% if not creators and not albums and not tracks %}
+            {% if not creators and not albums and not tracks and not genre %}
             <h4>No result found for "{{query}}" :(</h4>
             {% else %}
             <h4>SEARCH RESULTS FOR "{{query}}"</h4>
@@ -12,6 +12,31 @@
             {% endif %}
         </div>
         <div class="card-body">
+            {% if genre %}
+            <h5 class="card-title">{{query.upper()}} SONGS</h5>
+            <div class="row">
+                {% for track, creator, album in genre %}
+
+                <div class="col-4">
+                    <div class="card mb-1 mt-1">
+                        <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                            style="text-decoration: none;">
+                            <div class="card-header">{{ creator.creator_name }}</div>
+                        </a>
+                        <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
+                            data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
+                            data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
+                            data-creator="{{ creator.creator_name }}"
+                            data-current-user-name="{{ current_user.username }}"
+                            data-current-user-id="{{ current_user.id }}">
+                            <h5 class="card-title">{{ track.track_name }}{% if track.album_id != 0 %} (album:
+                                {{album.album_name}}) {% endif %}</h5>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
             {% if creators %}
             <h5 class="card-title">CREATORS</h5>
             <div class="row">
@@ -101,6 +126,7 @@
                 </div>
                 {% endfor %}
             </div>
+            {% endif %}
             {% endif %}
         </div>
     </div>

@@ -33,7 +33,15 @@ def search_result(query):
         .all()
     )
 
-    return creators, albums, songs
+    genre = (
+        db.session.query(Tracks, Creator, Album)
+        .filter(Tracks.genre.ilike(f"%{query}%"))
+        .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .outerjoin(Album, Tracks.album_id == Album.album_id)
+        .all()
+    )
+
+    return creators, albums, songs, genre
 
 
 @admin.route("/admin/<user>/home", methods=["GET", "POST"])
@@ -171,7 +179,12 @@ def creator_profile(user, creator):
 @login_required
 def search(user):
     query = request.form.get("search")
-    creators, albums, songs = search_result(query)
+    creators, albums, songs, genre = search_result(query)
     return render_template(
-        "admin/search.html", creators=creators, albums=albums, tracks=songs, query=query
+        "admin/search.html",
+        creators=creators,
+        albums=albums,
+        tracks=songs,
+        query=query,
+        genre=genre,
     )
