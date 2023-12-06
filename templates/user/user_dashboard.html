@@ -76,48 +76,52 @@
 
     <div class="card border-dark mb-3">
       <div class="card-body">
-        <h4 class="card-title">RECOMENDATIONS FOR YOU</h4>
+        <h4 class="card-title text-center">RECOMENDATIONS FOR YOU</h4>
         <hr>
         <h5 class="card-title">ALBUMS</h5>
         <hr>
         <div class="row">
-          {% for item in albums %}
-          {% if item %}
-          <div class="col-4">
-            <div class="card mb-3">
-              {% for album, track_, creator in item %}
-              {% if loop.first %}
-              <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
-                style="text-decoration: none;">
-                <div class="card-header">{{ creator.creator_name }}</div>
-              </a>
-              <div class="card-body">
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle card-title btn btn-dark" type="button"
-                    data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
-                    {{ album.album_name }}
-                  </button>
-                  <ul class="dropdown-menu track-dropdown">
-                    {% for album_, track, creator_ in item %}
-                    <li>
-                      <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
-                        data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
-                        data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
-                        data-current-user-name="{{ current_user.username }}" data-lyrics="{{ track.lyrics }}"
-                        data-current-user-id="{{ current_user.id }}" data-track-file="{{ track.track_file }}">
-                        {{ track.track_name }}
-                      </a>
-                    </li>
-                    {% endfor %}
-                  </ul>
+          <div class="card-group">
+            {% for item in albums %}
+            {% if item %}
+            <div class="col-4">
+              <div class="card mb-2 mx-1">
+                {% for album, track_, creator in item %}
+                {% if loop.first %}
+                <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                  style="text-decoration: none;">
+                  <div class="card-header">{{ creator.creator_name }} - {{ album.genre.upper() }} Album </div>
+                </a>
+                <div class="card-body">
+                  <h5 class="card-title">{{ album.album_name.upper() }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted text-small">{{ album.description }}</h6>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle card-title btn btn-dark" type="button"
+                      data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                      Tracks
+                    </button>
+                    <ul class="dropdown-menu track-dropdown">
+                      {% for album_, track, creator_ in item %}
+                      <li>
+                        <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                          data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                          data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
+                          data-current-user-name="{{ current_user.username }}" data-lyrics="{{ track.lyrics }}"
+                          data-current-user-id="{{ current_user.id }}" data-track-file="{{ track.track_file }}">
+                          {{ track.track_name }}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </div>
+                {% endif %}
+                {% endfor %}
               </div>
-              {% endif %}
-              {% endfor %}
             </div>
+            {% endif %}
+            {% endfor %}
           </div>
-          {% endif %}
-          {% endfor %}
         </div>
       </div>
     </div>
@@ -131,7 +135,7 @@
           {% for track,creator in singles %}
 
           <div class="col-4">
-            <div class="card mb-3">
+            <div class="card mb-2">
               <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
                 style="text-decoration: none;">
                 <div class="card-header">{{ creator.creator_name }}</div>
@@ -156,6 +160,41 @@
 {% endblock %}
 
 {% block footer %}
+<br>
+<footer id="footer" class="footer mt-auto py-3 bg-body-tertiary" style="position: sticky; bottom: 0; display: none;">
+  <div class="container">
+    <div class="row g-0">
+      <div class="col-1 d-flex align-items-stretch">
+        <img src="{{ url_for('static', filename='images/tom.gif') }}" class="img-fluid rounded unclickable undraggable"
+          style="object-fit: cover;">
+      </div>
+      <div class="col-2">
+        <h4 class="offcanvas-title" id="selected-track-name"></h4>
+        <span>
+          <h6 class="text-muted" id="track-details"></h6>
+        </span>
+      </div>
+      <div class="col-7">
+        <audio controls id="audio-player">
+          <source src="" type="audio/mp3">
+        </audio>
+      </div>
+      <div class="col-2">
+        <div class="btn-group dropup-center dropup">
+          <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Lyrics
+          </button>
+          <small class="mx-2 my-2" style="max-width: 250px;">
+            <p class=" dropdown-menu text-center" id="lyrics">
+            </p>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const player = new Plyr('#audio-player');
@@ -237,39 +276,6 @@
   });
 </script>
 
-<br>
-<footer id="footer" class="footer mt-auto py-3 bg-body-tertiary" style="position: sticky; bottom: 0; display: none;">
-  <div class="container">
-    <div class="row g-0">
-      <div class="col-1 d-flex align-items-stretch">
-        <img src="{{ url_for('static', filename='images/tom.gif') }}" class="img-fluid rounded unclickable undraggable"
-          style="object-fit: cover;">
-      </div>
-      <div class="col-2">
-        <h4 class="offcanvas-title" id="selected-track-name"></h4>
-        <span>
-          <h6 class="text-muted" id="track-details"></h6>
-        </span>
-      </div>
-      <div class="col-7">
-        <audio controls id="audio-player">
-          <source src="" type="audio/mp3">
-        </audio>
-      </div>
-      <div class="col-2">
-        <div class="btn-group dropup-center dropup">
-          <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Lyrics
-          </button>
-          <small class="mx-2 my-2" style="max-width: 250px;">
-            <p class=" dropdown-menu text-center" id="lyrics">
-            </p>
-          </small>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
