@@ -72,6 +72,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const player = new Plyr('#audio-player');
   });
+
   document.addEventListener('DOMContentLoaded', function () {
     var links = document.querySelectorAll('.card-body.stretched-link');
     links.forEach(function (link) {
@@ -84,6 +85,7 @@
         var currentUserId = this.dataset.currentUserId;
 
         var trackFile = "{{ url_for('static', filename='uploads/') }}" + this.dataset.trackFile;
+        var lyrics = this.dataset.lyrics;
         var footer = document.getElementById('footer');
         var stickyFooter = document.querySelector('.sticky-footer');
 
@@ -93,6 +95,13 @@
 
         document.getElementById('selected-track-name').innerText = trackName;
         document.getElementById('audio-player').src = trackFile;
+
+        var lyricsContainer = document.getElementById('lyrics');
+        if (lyrics === undefined) {
+          lyricsContainer.innerHTML = "Lyrics not provided by the creator.";
+        } else {
+          lyricsContainer.innerHTML = lyrics;
+        }
 
         footer.style.display = 'block';
         stickyFooter.style.display = 'block';
@@ -112,6 +121,7 @@
         var creatorId = selectedOption.dataset.creatorId;
         var creator = selectedOption.dataset.creator;
         var currentUser = selectedOption.dataset.currentUserName;
+        var lyrics = selectedOption.dataset.lyrics;
         var currentUserId = selectedOption.dataset.currentUserId;
         var trackFile = "{{ url_for('static', filename='uploads/') }}" + selectedOption.dataset.trackFile;
         var footer = document.getElementById('footer');
@@ -125,6 +135,12 @@
 
         document.getElementById('selected-track-name').innerText = trackName;
         document.getElementById('audio-player').src = trackFile;
+        var lyricsContainer = document.getElementById('lyrics');
+        if (lyrics === undefined) {
+          lyricsContainer.innerHTML = "Lyrics not provided by the creator.";
+        } else {
+          lyricsContainer.innerHTML = lyrics;
+        }
 
         footer.style.display = 'block';
         stickyFooter.style.display = 'block';
@@ -147,24 +163,36 @@
           <h6 class="text-muted" id="track-details"></h6>
         </span>
       </div>
-      <div class="col-8">
+      <div class="col-7">
         <audio controls id="audio-player">
           <source src="" type="audio/mp3">
         </audio>
       </div>
+      <div class="col-2">
+        <div class="btn-group dropup-center dropup">
+          <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Lyrics
+          </button>
+          <small class="mx-2 my-2" style="max-width: 250px;">
+            <p class=" dropdown-menu text-center" id="lyrics">
+            </p>
+          </small>
+        </div>
+      </div>
     </div>
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var clickableElements = document.querySelectorAll('.clickable-element');
+</footer>
 
-      clickableElements.forEach(function (element) {
-        element.addEventListener('click', function (event) {
-          // Stop the click event from propagating up the DOM hierarchy
-          event.stopPropagation();
-        });
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var clickableElements = document.querySelectorAll('.clickable-element');
+
+    clickableElements.forEach(function (element) {
+      element.addEventListener('click', function (event) {
+        // Stop the click event from propagating up the DOM hierarchy
+        event.stopPropagation();
       });
     });
-  </script>
-</footer>
+  });
+</script>
 {% endblock %}

@@ -26,7 +26,7 @@
                         <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
                             data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
                             data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
-                            data-creator="{{ creator.creator_name }}"
+                            data-creator="{{ creator.creator_name }}" data-lyrics="{{ track.lyrics }}"
                             data-current-user-name="{{ current_user.username }}"
                             data-current-user-id="{{ current_user.id }}">
                             <h5 class="card-title">{{ track.track_name }}{% if track.album_id != 0 %} (album:
@@ -84,7 +84,7 @@
                                             data-creator-id="{{ t.creator_id }}"
                                             data-creator="{{ creator.creator_name }}"
                                             data-current-user-name="{{ current_user.username }}"
-                                            data-current-user-id="{{ current_user.id }}"
+                                            data-current-user-id="{{ current_user.id }}" data-lyrics="{{ t.lyrics }}"
                                             data-track-file="{{ t.track_file }}">
                                             {{ t.track_name }}
                                         </a>
@@ -117,7 +117,7 @@
                             data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
                             data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
                             data-creator="{{ creator.creator_name }}"
-                            data-current-user-name="{{ current_user.username }}"
+                            data-current-user-name="{{ current_user.username }}" data-lyrics="{{ track.lyrics }}"
                             data-current-user-id="{{ current_user.id }}">
                             <h5 class="card-title">{{ track.track_name }} {% if track.album_id != 0 %} (album: {{
                                 album.album_name }}) {% endif %} </h5>
@@ -131,67 +131,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var links = document.querySelectorAll('.card-body.stretched-link');
-        links.forEach(function (link) {
-            link.addEventListener('click', function () {
-                var trackName = this.dataset.trackName;
-                var artists = this.dataset.artists;
-                var creatorId = this.dataset.creatorid;
-                var creator = this.dataset.creator;
-                var currentUser = this.dataset.currentUserName;
-                var currentUserId = this.dataset.currentUserId;
-
-                var trackFile = "{{ url_for('static', filename='uploads/') }}" + this.dataset.trackFile;
-                var footer = document.getElementById('footer');
-                var stickyFooter = document.querySelector('.sticky-footer');
-
-                var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
-
-                document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
-
-                document.getElementById('selected-track-name').innerText = trackName;
-                document.getElementById('audio-player').src = trackFile;
-
-                footer.style.display = 'block';
-                stickyFooter.style.display = 'block';
-            });
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var albumLinks = document.querySelectorAll('.track-dropdown .dropdown-item');
-
-        albumLinks.forEach(function (item) {
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                var selectedOption = this;
-                var trackName = selectedOption.dataset.trackName;
-                var artists = selectedOption.dataset.artists;
-                var creatorId = selectedOption.dataset.creatorId;
-                var creator = selectedOption.dataset.creator;
-                var currentUser = selectedOption.dataset.currentUserName;
-                var currentUserId = selectedOption.dataset.currentUserId;
-                var trackFile = "{{ url_for('static', filename='uploads/') }}" + selectedOption.dataset.trackFile;
-                var footer = document.getElementById('footer');
-                var stickyFooter = document.querySelector('.sticky-footer');
-
-                console.log('Selected Track:', creator);
-
-                var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
-
-                document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
-
-                document.getElementById('selected-track-name').innerText = trackName;
-                document.getElementById('audio-player').src = trackFile;
-
-                footer.style.display = 'block';
-                stickyFooter.style.display = 'block';
-            });
-        });
-    });
-</script>
 
 {% endblock %}

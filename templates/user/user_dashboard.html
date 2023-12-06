@@ -103,7 +103,7 @@
                       <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
                         data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
                         data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
-                        data-current-user-name="{{ current_user.username }}"
+                        data-current-user-name="{{ current_user.username }}" data-lyrics="{{ track.lyrics }}"
                         data-current-user-id="{{ current_user.id }}" data-track-file="{{ track.track_file }}">
                         {{ track.track_name }}
                       </a>
@@ -139,8 +139,8 @@
               <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
                 data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
                 data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
-                data-creator="{{ creator.creator_name }}" data-current-user-name="{{ current_user.username }}"
-                data-current-user-id="{{ current_user.id }}">
+                data-lyrics="{{ track.lyrics }}" data-creator="{{ creator.creator_name }}"
+                data-current-user-name="{{ current_user.username }}" data-current-user-id="{{ current_user.id }}">
                 <h5 class="card-title">{{ track.track_name }}</h5>
               </div>
             </div>
@@ -173,6 +173,7 @@
         var currentUserId = this.dataset.currentUserId;
 
         var trackFile = "{{ url_for('static', filename='uploads/') }}" + this.dataset.trackFile;
+        var lyrics = this.dataset.lyrics;
         var footer = document.getElementById('footer');
         var stickyFooter = document.querySelector('.sticky-footer');
 
@@ -182,6 +183,13 @@
 
         document.getElementById('selected-track-name').innerText = trackName;
         document.getElementById('audio-player').src = trackFile;
+
+        var lyricsContainer = document.getElementById('lyrics');
+        if (lyrics === undefined) {
+          lyricsContainer.innerHTML = "Lyrics not provided by the creator.";
+        } else {
+          lyricsContainer.innerHTML = lyrics;
+        }
 
         footer.style.display = 'block';
         stickyFooter.style.display = 'block';
@@ -201,6 +209,7 @@
         var creatorId = selectedOption.dataset.creatorId;
         var creator = selectedOption.dataset.creator;
         var currentUser = selectedOption.dataset.currentUserName;
+        var lyrics = selectedOption.dataset.lyrics;
         var currentUserId = selectedOption.dataset.currentUserId;
         var trackFile = "{{ url_for('static', filename='uploads/') }}" + selectedOption.dataset.trackFile;
         var footer = document.getElementById('footer');
@@ -214,6 +223,12 @@
 
         document.getElementById('selected-track-name').innerText = trackName;
         document.getElementById('audio-player').src = trackFile;
+        var lyricsContainer = document.getElementById('lyrics');
+        if (lyrics === undefined) {
+          lyricsContainer.innerHTML = "Lyrics not provided by the creator.";
+        } else {
+          lyricsContainer.innerHTML = lyrics;
+        }
 
         footer.style.display = 'block';
         stickyFooter.style.display = 'block';
@@ -236,23 +251,35 @@
           <h6 class="text-muted" id="track-details"></h6>
         </span>
       </div>
-      <div class="col-8">
+      <div class="col-7">
         <audio controls id="audio-player">
           <source src="" type="audio/mp3">
         </audio>
       </div>
+      <div class="col-2">
+        <div class="btn-group dropup-center dropup">
+          <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Lyrics
+          </button>
+          <small class="mx-2 my-2" style="max-width: 250px;">
+            <p class=" dropdown-menu text-center" id="lyrics">
+            </p>
+          </small>
+        </div>
+      </div>
     </div>
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var clickableElements = document.querySelectorAll('.clickable-element');
+</footer>
 
-      clickableElements.forEach(function (element) {
-        element.addEventListener('click', function (event) {
-          event.stopPropagation();
-        });
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var clickableElements = document.querySelectorAll('.clickable-element');
+
+    clickableElements.forEach(function (element) {
+      element.addEventListener('click', function (event) {
+        event.stopPropagation();
       });
     });
-  </script>
-</footer>
+  });
+</script>
 {% endblock %}
