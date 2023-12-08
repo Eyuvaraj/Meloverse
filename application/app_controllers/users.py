@@ -116,8 +116,46 @@ def favorites(user):
 @user.route("/meloverse/u/<user>/my_playlists", methods=["GET", "POST"])
 @login_required
 def user_playlists(user):
+    if request.method == "POST":
+        print(request.form)
+        plalist_name = request.form.get("playlistName")
+        tracks = request.form.getlist("selectedTracks")
+        user = current_user.id
+        new_playlist = Playlist(playlist_name=plalist_name, user=user)
+        db.session.add(new_playlist)
+        db.session.commit()
+
+        playlist_id = new_playlist.playlist_id
+        for i in range(len(tracks)):
+            playlist_track = User_Playlist(
+                playlist_id=playlist_id, track_id=int(tracks[i])
+            )
+            db.session.add(playlist_track)
+        db.session.commit()
+
+        if request.form.get("deletePlaylist") == "yes":
+            playlist_id = request.form.get("playlist_id")
+            tracks2Del = User_Playlist.query.filter_by(playlist_id=playlist_id).all()
+            for i in tracks2Del:
+                db.session.delete(i)
+            playlist = Playlist.query.filter_by(playlist_id=playlist_id).first()
+            db.session.delete(playlist)
+            db.session.commit()
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
-    return render_template("user/user_playlists.html", creator_signup_status=creator)
+    tracks = Tracks.query.order_by(Tracks.track_name).all()
+    playlists = (
+        db.session.query(Playlist, User_Playlist, Tracks)
+        .filter(Playlist.user == current_user.id)
+        .join(User_Playlist, User_Playlist.playlist_id == Playlist.playlist_id)
+        .join(Tracks, User_Playlist.playlist_id == Tracks.track_id)
+        .all()
+    )
+    return render_template(
+        "user/user_playlists.html",
+        creator_signup_status=creator,
+        tracks=tracks,
+        playlists=playlists,
+    )
 
 
 @user.route("/meloverse/u/<user>/discover", methods=["GET", "POST"])

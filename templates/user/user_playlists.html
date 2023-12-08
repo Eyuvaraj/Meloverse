@@ -2,6 +2,250 @@
 
 {% block body %}
 <div class="container">
-    <h6>user playlists page</h6>
-</div>
-{% endblock %}
+    <div class="row">
+        {% if playlists %}
+        <div class="col-6">
+            {% else %}
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                {% endif %}
+                <div class="card text-center">
+                    <img src="{{ url_for('static', filename='images/playlist.jpg') }}" class="card-img-top"
+                        style="object-fit: cover; max-height: 250px; max-width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title">CREATE PLAYLIST</h5>
+                        <p class="card-text">Create a New Playlist</p>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#newPlaylist">
+                            Create
+                        </button>
+
+                        <div class="modal fade" id="newPlaylist" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Create Playlist</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form method="post">
+                                        <div class="modal-body">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="floatingInput"
+                                                    name="playlistName" placeholder="My Playlist" required>
+                                                <label for="floatingInput">Playlist Name</label>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="trackSearch" class="form-label">Search Tracks:</label>
+                                                <input type="text" class="form-control" id="trackSearch"
+                                                    oninput="filterTracks()" placeholder="Type to search">
+                                            </div>
+                                            <ul class="list-group list-group-flush" id="trackList">
+                                                {% for track in tracks %}
+                                                <li class="list-group-item">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            id="{{ track.track_id }}" name="selectedTracks"
+                                                            value="{{ track.track_id }}">
+                                                        <label class="form-check-label" for="{{ track.track_id }}">
+                                                            {{ track.track_name }} - {{ track.artists }}
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary btn-sm">Create</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if playlists %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="text-center">MY PLAYLISTS</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for playlist, usr_playlist, track in playlists %}
+                        {% if loop.changed(playlist.playlist_id) %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {{ playlist.playlist_name }}
+                            </span>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-primary">Play</button>
+
+                                <button type="button" class="btn btn-sm btn-light" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Add to favorites">❤️</button>
+
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#editPlaylist_{{ playlist.playlist_id }}">Edit✏️</button>
+                                <div class="modal fade" id="editPlaylist_{{ playlist.playlist_id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Playlist {{ playlist.playlist_name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form method="post">
+                                                <div class="modal-body">
+                                                    <div class="form-floating mb-3">
+                                                        <input type="text" class="form-control" id="floatingInput"
+                                                            name="playlistName" placeholder="My Playlist" required
+                                                            value="{{ playlist.playlist_name }}">
+                                                        <label for="floatingInput">Playlist Name</label>
+                                                    </div>
+                                                    <div class="row mx-auto">
+                                                        <div class="d-grid col">
+                                                            <button type="button"
+                                                                class="btn btn-outline-light btn-sm btn-block"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#addTrackModal">Add Track
+                                                            </button>
+                                                            <div class="modal fade" id="addTrackModal" tabindex="-1">
+                                                                <div class="modal-dialog modal-dialog-scrollable">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h1 class="modal-title fs-5"
+                                                                                id="exampleModalLabel">Add Tracks to
+                                                                                {{ playlist.playlist_name }}
+                                                                            </h1>
+                                                                            <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                        </div>
+                                                                        <form method="post">
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-3">
+                                                                                    <label for="trackSearch"
+                                                                                        class="form-label">Search
+                                                                                        Tracks:</label>
+                                                                                    <input type="text"
+                                                                                        class="form-control"
+                                                                                        id="trackSearch"
+                                                                                        oninput="filterTracks()"
+                                                                                        placeholder="Type to search">
+                                                                                </div>
+                                                                                <ul class="list-group list-group-flush"
+                                                                                    id="trackList">
+                                                                                    {% for track in tracks %}
+                                                                                    <li class="list-group-item">
+                                                                                        <div class="form-check">
+                                                                                            <input type="checkbox"
+                                                                                                class="form-check-input"
+                                                                                                id="{{ track.track_id }}"
+                                                                                                name="selectedTracks"
+                                                                                                value="{{ track.track_id }}">
+                                                                                            <label
+                                                                                                class="form-check-label"
+                                                                                                for="{{ track.track_id }}">
+                                                                                                {{ track.track_name }} -
+                                                                                                {{ track.artists }}
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    {% endfor %}
+                                                                                </ul>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-secondary btn-sm"
+                                                                                    data-bs-dismiss="modal">Cancel</button>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary btn-sm">Add
+                                                                                    Tracks</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-grid col">
+                                                            <button type="button"
+                                                                class="btn btn-outline-light btn-sm btn-block">Remove
+                                                                Track
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#DeletePlaylist_{{ playlist.playlist_id }}">Delete🗑️</button>
+                                <div class="modal fade" id="DeletePlaylist_{{ playlist.playlist_id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Delete Playlist {{ playlist.playlist_name }}
+                                                </h5>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Do you want to Delete {{ playlist.playlist_name}}, you cannot undo this
+                                                action?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <form
+                                                    action="{{ url_for('user.user_playlists', user=current_user.username) }}"
+                                                    method="post">
+                                                    <input type="hidden" name="playlist_id"
+                                                        value="{{ playlist.playlist_id }}">
+                                                    <button class="btn btn-danger btn-sm" type="submit"
+                                                        name="deletePlaylist" value="yes">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function filterTracks() {
+            var input, filter, ul, li, label, i, txtValue;
+            input = document.getElementById('trackSearch');
+            filter = input.value.toUpperCase();
+            ul = document.getElementById('trackList');
+            li = ul.getElementsByTagName('li');
+
+            for (i = 0; i < li.length; i++) {
+                label = li[i].getElementsByTagName('label')[0];
+                txtValue = label.textContent || label.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = '';
+                } else {
+                    li[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+    {% endblock %}
