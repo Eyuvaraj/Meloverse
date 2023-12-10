@@ -254,8 +254,6 @@
         var footer = document.getElementById('footer');
         var stickyFooter = document.querySelector('.sticky-footer');
 
-        console.log('Selected Track:', creator);
-
         var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
 
         document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
@@ -268,7 +266,6 @@
         } else {
           lyricsContainer.innerHTML = lyrics;
         }
-
         footer.style.display = 'block';
         stickyFooter.style.display = 'block';
       });

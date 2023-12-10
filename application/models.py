@@ -57,7 +57,7 @@ class Album(db.Model):
 class Playlist(db.Model):
     __tablename__ = "playlist"
     playlist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    playlist_name = db.Column(db.String)
+    playlist_name = db.Column(db.String, nullable=False)
     user = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 

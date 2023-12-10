@@ -1,7 +1,42 @@
 {% extends 'admin/admin_dashboard.html' %}
 
 {% block body %}
-<div class="container">
-    <h1>stats page</h1>
-</div>
+<main class="flex-shrink-0">
+    <div class="container">
+        <h4 class="text-center">STATS</h4>
+        <section class="mx-2 my-3">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='data_vis_assets/user_cat.png') }}"
+                            class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">User Role Distribution</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='data_vis_assets/song_cat.png') }}"
+                            class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Music Catalogue Distribution</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="..." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="mx-2 my-2">
+
+        </section>
+    </div>
+</main>
 {% endblock %}

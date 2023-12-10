@@ -117,7 +117,6 @@ def favorites(user):
 @login_required
 def user_playlists(user):
     if request.method == "POST":
-        print(request.form)
         plalist_name = request.form.get("playlistName")
         tracks = request.form.getlist("selectedTracks")
         user = current_user.id
@@ -133,6 +132,8 @@ def user_playlists(user):
             db.session.add(playlist_track)
         db.session.commit()
 
+        flash("Playlist Created 🎊")
+
         if request.form.get("deletePlaylist") == "yes":
             playlist_id = request.form.get("playlist_id")
             tracks2Del = User_Playlist.query.filter_by(playlist_id=playlist_id).all()
@@ -141,6 +142,10 @@ def user_playlists(user):
             playlist = Playlist.query.filter_by(playlist_id=playlist_id).first()
             db.session.delete(playlist)
             db.session.commit()
+            flash("Playlist Deleted 🎊")
+
+        return redirect(url_for("user.user_playlists", user=current_user.username))
+
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     tracks = Tracks.query.order_by(Tracks.track_name).all()
     playlists = (
@@ -625,3 +630,13 @@ def creator_profile(user, creator):
         albums_obj=album_obj,
         follow_status=follow_status,
     )
+
+
+# @user.route("/update_timeline", methods=["POST"])
+# @login_required
+# def update_timeline():
+#     user_id = request.form.get("user_id")
+#     track_id = request.form.get("track_id")
+#     album_id = request.form.get("album_id")
+
+#     print(user_id, track_id, album_id)

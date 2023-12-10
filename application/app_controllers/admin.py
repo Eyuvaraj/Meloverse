@@ -1,5 +1,6 @@
 from flask import redirect, url_for, render_template, request, Flask, flash, Blueprint
 from ..database import db
+import os
 from ..models import *
 from sqlalchemy import desc
 from datetime import datetime
@@ -43,6 +44,17 @@ def search_result(query):
     )
 
     return creators, albums, songs, genre
+
+
+from matplotlib import pyplot as plt
+import numpy
+
+
+def get_data_vis_assets_path():
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    static_dir = os.path.join(current_directory, "..", "..", "static")
+    data_vis_dir = os.path.join(static_dir, "data_vis_assets")
+    return data_vis_dir
 
 
 @admin.route("/admin/<user>/home", methods=["GET", "POST"])
@@ -115,9 +127,10 @@ def alert(user):
     return render_template("admin/alerts.html")
 
 
-@admin.route("/admin/<user>/stats", methods=["GET", "POST"])
+@admin.route("/admin/<user>/stats", methods=["GET"])
 @login_required
 def stats(user):
+    plotter()
     return render_template("admin/stats.html")
 
 
@@ -206,3 +219,31 @@ def search(user):
         query=query,
         genre=genre,
     )
+
+
+def plotter():
+    assets_path = get_data_vis_assets_path()
+
+    user_count = Users.query.count()
+    admin_count = Users.query.filter_by(role="admin").count()
+    creator_count = Creator.query.count()
+    x = ["users", "admin", "creators"]
+    y = [user_count, admin_count, creator_count]
+    plt.bar(x, y)
+
+    filename = "user_cat"
+    filepath = os.path.join(assets_path, filename)
+    plt.savefig(filepath)
+    plt.close()
+
+    album_count = Album.query.count()
+    singles_count = Tracks.query.filter_by(album_id=0).count()
+    album_tracks_count = Tracks.query.count() - singles_count - 1
+    x = ["Albums", "Singles", "Album Songs"]
+    y = [album_count, singles_count, album_tracks_count]
+    plt.bar(x, y)
+
+    filename = "song_cat"
+    filepath = os.path.join(assets_path, filename)
+    plt.savefig(filepath)
+    plt.close()
