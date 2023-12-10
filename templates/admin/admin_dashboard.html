@@ -17,7 +17,7 @@
         <li class="nav-item"><a href="{{ url_for('admin.user_management', user=current_user.username) }}"
             class="nav-link px-2 link-body-emphasis">Users</a></li>
         <li class="nav-item"><a href="{{ url_for('admin.alert', user=current_user.username)}}"
-            class="nav-link px-2 link-body-emphasis">Create Alert</a></li>
+            class="nav-link px-2 link-body-emphasis">Post Alert</a></li>
         <li class="nav-item"><a href="{{ url_for('admin.stats', user=current_user.username)}}"
             class="nav-link px-2 link-body-emphasis">Stats</a></li>
       </ul>
@@ -60,9 +60,100 @@
 {% block body %}
 <main class="flex-shrink-0">
   <div class="container">
-    <h6>no. of users, creators, admins, new users</h6>
-    <h6>most listened creator, usage stats...</h6>
-    <hr>
+    <section class="mx-2 my-3">
+      <div class="row row-cols-2">
+        <div class="col">
+          <div class="card h-100">
+            <h5 class="card-header">User Stats👤</h5>
+            <div class="card-body">
+              <table class="table table-hover">
+                <tr>
+                  <th scope="col">Users</th>
+                  <td scope="col">{{ user_count }}</td>
+                </tr>
+                <tr>
+                  <th scope="col">Creators</th>
+                  <td scope="col">{{ creator_count }}</td>
+                </tr>
+                <tr>
+                  <th scope="col">Admin</th>
+                  <td scope="col">{{ admin_count }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <h5 class="card-header">Songs🎹</h5>
+            <div class="card-body">
+              <table class="table table-hover">
+                <tr>
+                  <th>Total Albums</th>
+                  <td>{{ album_count }}</td>
+                </tr>
+                <tr>
+                  <th>Total Singles</th>
+                  <td>{{ singles_count }}</td>
+                </tr>
+                <tr>
+                  <th>Total Tracks</th>
+                  <td>{{ tracks_count }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="mx-2 my-2">
+      <div class="row row-cols-4">
+        <div class="col">
+          <div class="card h-100">
+            <h5 class="card-header">Top Creators🪽</h5>
+            <div class="card-body">
+              {% if top_creators %}
+              <ul class="list-group list-group-flush">
+                {% for creator in top_creators %}
+                <li class="list-group-item"><a style="text-decoration: none;"
+                    href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}">{{
+                    creator.creator_name }}</a></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <h5 class="card-header">Trending Creators</h5>
+            <div class="card-body">
+              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <h5 class="card-header">Trending Albums</h5>
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+                content.
+                This card has even longer content than the first to show that equal height action.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <h5 class="card-header">Trending Songs</h5>
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+                content.
+                This card has even longer content than the first to show that equal height action.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
 {% endblock %}

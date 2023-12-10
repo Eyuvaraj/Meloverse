@@ -27,7 +27,7 @@ class Creator(db.Model):
 
 class Tracks(db.Model):
     __tablename__ = "tracks"
-    track_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    track_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     track_name = db.Column(db.String, nullable=False)
     artists = db.Column(db.String, nullable=False)
     creator_id = db.Column(db.String, db.ForeignKey("creator.creator_name"))
@@ -51,6 +51,7 @@ class Album(db.Model):
     genre = db.Column(db.String)
     description = db.Column(db.String)
     no_of_tracks = db.Column(db.Integer, default=0)
+    date_created = db.Column(db.Date)
 
 
 class Playlist(db.Model):
@@ -104,3 +105,12 @@ class whois_Followeing_who(db.Model):
     follower_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fan_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     fan_of = db.Column(db.Integer, db.ForeignKey("creator.creator_id"))
+
+
+class usage_timeline(db.Model):
+    __tablename__ = "usage_timeline"
+    timeline_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date_time = db.Column(db.Date)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    track_id = db.Column(db.Integer, db.ForeignKey("tracks.track_id"), default=0)
+    album_id = db.Column(db.Integer, db.ForeignKey("album.album_id"), default=0)

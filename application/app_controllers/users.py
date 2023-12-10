@@ -64,8 +64,8 @@ def user_dashboard(user):
     alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     album_count = Album.query.count()
-    track_count = abs(Tracks.query.count() - 9)
-    random_tracks_no = random.randint(9, track_count)
+    track_count = abs(Tracks.query.count() - 2)
+    random_tracks_no = random.randint(1, track_count)
     singles = (
         db.session.query(Tracks, Creator)
         .filter(Tracks.album_id == 0, Tracks.track_id >= random_tracks_no)
@@ -418,14 +418,14 @@ def announcement(user):
         if announcement != "":
             creator = current_user.username
             heading = request.form.get("heading")
-            file = request.form.get("file")
+            link = request.form.get("link")
             date = datetime.now()
             new_annoucement = Announcement(
                 announcement=announcement,
                 date=date,
                 creator=creator,
                 heading=heading,
-                file=file,
+                link=link,
             )
             db.session.add(new_annoucement)
             db.session.commit()
@@ -536,6 +536,7 @@ def new_album(user):
         year = datetime.now().year
         genre = request.form.get("genre")
         description = request.form.get("album_description")
+        date_created = datetime.now().date()
         creator_id = current_user.id
         new_album = Album(
             album_name=album_name,
@@ -543,6 +544,7 @@ def new_album(user):
             genre=genre,
             description=description,
             creator_id=creator_id,
+            date_created=date_created,
         )
         db.session.add(new_album)
         no_of_albums_update = text(

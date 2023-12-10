@@ -1,6 +1,7 @@
 from flask import redirect, url_for, render_template, request, Flask, flash, Blueprint
 from ..database import db
 from ..models import *
+from sqlalchemy import desc
 from datetime import datetime
 from flask_login import (
     UserMixin,
@@ -47,7 +48,24 @@ def search_result(query):
 @admin.route("/admin/<user>/home", methods=["GET", "POST"])
 @login_required
 def admin_dashboard(user):
-    return render_template("admin/admin_dashboard.html")
+    user_count = Users.query.count()
+    admin_count = Users.query.filter_by(role="admin").count()
+    creator_count = Creator.query.count()
+    album_count = Album.query.count()
+    tracks_count = Tracks.query.count()
+    singles_count = Tracks.query.filter_by(album_id="0").count()
+    top_creators = Creator.query.order_by(desc(Creator.followers)).limit(3).all()
+    treading_creators = Creator.query.count()
+    return render_template(
+        "admin/admin_dashboard.html",
+        user_count=user_count,
+        admin_count=admin_count,
+        creator_count=creator_count,
+        album_count=album_count,
+        tracks_count=tracks_count,
+        singles_count=singles_count,
+        top_creators=top_creators,
+    )
 
 
 @admin.route("/admin/<user>/user_manager", methods=["GET", "POST"])

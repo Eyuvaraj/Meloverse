@@ -88,61 +88,6 @@
                                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
                                     data-bs-target="#editPlaylist_{{ playlist.playlist_id }}">Edit✏️</button>
 
-                                <div class="modal fade" id="editPlaylist_{{ playlist.playlist_id }}" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5">Edit Playlist</h1>
-                                                <button type="button" class="btn-close"
-                                                    data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <form method="post">
-                                                <div class="modal-body">
-                                                    <div class="form-floating mb-3">
-                                                        <input type="text" class="form-control"
-                                                            id="editFloatingInput_{{ playlist.playlist_id }}"
-                                                            name="playlistName" placeholder="My Playlist" required
-                                                            value="{{ playlist.playlist_name }}">
-                                                        <label
-                                                            for="editFloatingInput_{{ playlist.playlist_id }}">Playlist
-                                                            Name</label>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editTrackSearch_{{ playlist.playlist_id }}"
-                                                            class="form-label">Search
-                                                            Tracks:</label>
-                                                        <input type="text" class="form-control"
-                                                            id="editTrackSearch_{{ playlist.playlist_id }}"
-                                                            oninput="filterTracks2('{{ playlist.playlist_id }}')"
-                                                            placeholder="Type to search">
-                                                    </div>
-                                                    <ul class="list-group list-group-flush"
-                                                        id="editTrackList_{{ playlist.playlist_id }}">
-                                                        {% for track in tracks %}
-                                                        <li class="list-group-item">
-                                                            <div class="form-check">
-                                                                <input type="checkbox" class="form-check-input"
-                                                                    id="{{ track.track_id }}" name="selectedTracks"
-                                                                    value="{{ track.track_id }}">
-                                                                <label class="form-check-label"
-                                                                    for="{{ track.track_id }}">
-                                                                    {{ track.track_name }} - {{ track.artists }}
-                                                                </label>
-                                                            </div>
-                                                        </li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm"
-                                                        data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                     data-bs-target="#DeletePlaylist_{{ playlist.playlist_id }}">Delete🗑️</button>
                                 <div class="modal fade" id="DeletePlaylist_{{ playlist.playlist_id }}" tabindex="-1">
@@ -182,6 +127,58 @@
             </div>
         </div>
         {% endif %}
+        {% if playlists %}
+        {% for playlist, usr_playlist, track in playlists %}
+        {% if loop.changed(playlist.playlist_id) %}
+        <div class="modal fade" id="editPlaylist_{{ playlist.playlist_id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Edit Playlist</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post">
+                        <div class="modal-body">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control"
+                                    id="editFloatingInput_{{ playlist.playlist_id }}" name="playlistName"
+                                    placeholder="My Playlist" required value="{{ playlist.playlist_name }}">
+                                <label for="editFloatingInput_{{ playlist.playlist_id }}">Playlist
+                                    Name</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editTrackSearch_{{ playlist.playlist_id }}" class="form-label">Search
+                                    Tracks:</label>
+                                <input type="text" class="form-control" id="editTrackSearch_{{ playlist.playlist_id }}"
+                                    placeholder="Type to search"
+                                    oninput="filterTracks2(this, {{ playlist.playlist_id }})">
+                            </div>
+                            <ul class="list-group list-group-flush" id="editTrackList_{{ playlist.playlist_id }}">
+                                {% for track in tracks %}
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="{{ track.track_id }}"
+                                            name="selectedTracks" value="{{ track.track_id }}">
+                                        <label class="form-check-label" for="{{ track.track_id }}">
+                                            {{ track.track_name }} - {{ track.artists }}
+                                        </label>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
     </div>
 </div>
 
@@ -205,23 +202,16 @@
         }
     }
 
-    function filterTracks2() {
-        function filterTracks(playlistId) {
-            var input, filter, ul, li, label, i, txtValue;
-            input = document.getElementById('editTrackSearch_' + playlistId);
-            filter = input.value.toUpperCase();
-            ul = document.getElementById('editTrackList_' + playlistId);
-            li = ul.getElementsByClassName('list-group-item');
+    function filterTracks2(input, playlistId) {
+        const filter = input.value.toUpperCase();
+        const trackList = document.getElementById('editTrackList_' + playlistId);
 
-            for (i = 0; i < li.length; i++) {
-                label = li[i].getElementsByTagName('label')[0];
-                txtValue = label.textContent || label.innerText;
-
-                if (txtValue.toUpperCase().includes(filter)) {
-                    li[i].style.display = '';
-                } else {
-                    li[i].style.display = 'none';
-                }
+        for (const item of trackList.children) {
+            const trackName = item.querySelector('label').textContent.toUpperCase();
+            if (trackName.includes(filter)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
             }
         }
     }
