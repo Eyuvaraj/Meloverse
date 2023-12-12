@@ -3,7 +3,8 @@
 {% block body %}
 <main class="flex-shrink-0">
     <div class="container">
-        <h4 class="text-center">STATS</h4>
+        <h2 class="text-center">STATS</h2>
+        <hr>
         <section class="mx-2 my-3">
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col">
@@ -35,8 +36,27 @@
                 </div>
             </div>
         </section>
+        <br>
         <section class="mx-2 my-2">
-
+            <div class="row row-cols-1 g-4">
+                <div class="col-6">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='data_vis_assets/users_gained.png') }}"
+                            class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">User registration trends over time</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='data_vis_assets/creator_followers.png') }}"
+                            class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Distribution of Followers Among Creators</h5>
+                        </div>
+                    </div>
+                </div>
         </section>
     </div>
 </main>

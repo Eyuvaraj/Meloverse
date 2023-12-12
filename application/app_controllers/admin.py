@@ -311,12 +311,9 @@ def plotter():
     for join_date in join_dates:
         date_str = join_date
         user_count_by_date[date_str] = user_count_by_date.get(date_str, 0) + 1
-        cumulative_users.append(
-            sum(user_count_by_date.values())
-        )  # Update cumulative count
+        cumulative_users.append(sum(user_count_by_date.values()))
 
     dates, user_counts = zip(*sorted(user_count_by_date.items()))
-
     plt.figure(figsize=(12, 6))
     plt.plot(cumulative_users, dates)
     plt.ylabel("Join Date")
@@ -326,4 +323,17 @@ def plotter():
     plt.savefig(filepath)
     plt.close()
 
+    creators = Creator.query.all()
+    creator_name, followers = [], []
+    for creator in creators:
+        creator_name.append(creator.creator_name)
+        followers.append(creator.followers)
+    plt.figure(figsize=(12, 6))
+    plt.bar(creator_name, followers)
+    plt.xlabel("Creator")
+    plt.ylabel("Followers")
+    filename = "creator_followers"
+    filepath = os.path.join(assets_path, filename)
+    plt.savefig(filepath)
+    plt.close()
     return
