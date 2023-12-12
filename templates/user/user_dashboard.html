@@ -136,15 +136,18 @@
 
           <div class="col-4">
             <div class="card mb-2">
-              <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
-                style="text-decoration: none;">
-                <div class="card-header">{{ creator.creator_name }}</div>
-              </a>
+              <div class="card-header">
+                <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                  style="text-decoration: none;">
+                  {{ creator.creator_name }}
+                </a>
+              </div>
               <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
                 data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
                 data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
                 data-lyrics="{{ track.lyrics }}" data-creator="{{ creator.creator_name }}"
-                data-current-user-name="{{ current_user.username }}" data-current-user-id="{{ current_user.id }}">
+                data-current-user-name="{{ current_user.username }}" data-current-user-id="{{ current_user.id }}"
+                style="position: relative;">
                 <h5 class="card-title">{{ track.track_name }}</h5>
               </div>
             </div>
@@ -166,7 +169,7 @@
     <div class="row g-0">
       <div class="col-1 d-flex align-items-stretch">
         <img src="{{ url_for('static', filename='images/tom.gif') }}" class="img-fluid rounded unclickable undraggable"
-          style="object-fit: cover;">
+          style="object-fit: cover; margin-left: -5px; margin-right: -10px;">
       </div>
       <div class="col-2">
         <h4 class="offcanvas-title" id="selected-track-name"></h4>

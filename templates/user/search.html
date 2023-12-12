@@ -45,16 +45,18 @@
 
                 <div class="col-4">
                     <div class="card mb-1 mt-1">
-                        <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
-                            style="text-decoration: none;">
-                            <div class="card-header">{{ creator.creator_name }}</div>
-                        </a>
+                        <div class="card-header">
+                            <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                                style="text-decoration: none;">
+                                {{ creator.creator_name }}
+                            </a>
+                        </div>
                         <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
                             data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
                             data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
                             data-creator="{{ creator.creator_name }}" data-lyrics="{{ track.lyrics }}"
                             data-current-user-name="{{ current_user.username }}"
-                            data-current-user-id="{{ current_user.id }}">
+                            data-current-user-id="{{ current_user.id }}" style="position: relative;">
                             <h5 class="card-title">{{ track.track_name }}{% if track.album_id != 0 %} (album:
                                 {{album.album_name}}) {% endif %}</h5>
                         </div>
