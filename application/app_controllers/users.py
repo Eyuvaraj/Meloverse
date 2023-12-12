@@ -117,24 +117,25 @@ def favorites(user):
 @login_required
 def user_playlists(user):
     if request.method == "POST":
-        plalist_name = request.form.get("playlistName")
-        tracks = request.form.getlist("selectedTracks")
-        user = current_user.id
-        new_playlist = Playlist(playlist_name=plalist_name, user=user)
-        db.session.add(new_playlist)
-        db.session.commit()
+        if request.form.get("createPlaylist") == "yes":
+            plalist_name = request.form.get("playlistName")
+            tracks = request.form.getlist("selectedTracks")
+            user = current_user.id
+            new_playlist = Playlist(playlist_name=plalist_name, user=user)
+            db.session.add(new_playlist)
+            db.session.commit()
 
-        playlist_id = new_playlist.playlist_id
-        for i in range(len(tracks)):
-            playlist_track = User_Playlist(
-                playlist_id=playlist_id, track_id=int(tracks[i])
-            )
-            db.session.add(playlist_track)
-        db.session.commit()
+            playlist_id = new_playlist.playlist_id
+            for i in range(len(tracks)):
+                playlist_track = User_Playlist(
+                    playlist_id=playlist_id, track_id=int(tracks[i])
+                )
+                db.session.add(playlist_track)
+            db.session.commit()
 
-        flash("Playlist Created 🎊")
+            flash("Playlist Created 🎊")
 
-        if request.form.get("deletePlaylist") == "yes":
+        elif request.form.get("deletePlaylist") == "yes":
             playlist_id = request.form.get("playlist_id")
             tracks2Del = User_Playlist.query.filter_by(playlist_id=playlist_id).all()
             for i in tracks2Del:
@@ -142,24 +143,50 @@ def user_playlists(user):
             playlist = Playlist.query.filter_by(playlist_id=playlist_id).first()
             db.session.delete(playlist)
             db.session.commit()
-            flash("Playlist Deleted 🎊")
+            flash("Playlist Deleted")
+
+        elif request.form.get("editPlaylist") == "yes":
+            playlist_id = request.form.get("playlistId")
+            playlist_tracks = User_Playlist.query.filter_by(
+                playlist_id=playlist_id
+            ).all()
+            for i in playlist_tracks:
+                db.session.delete(i)
+            db.session.commit()
+            selected_tracks = request.form.getlist("selectedTracks")
+            for i in selected_tracks:
+                update_playlist_track = User_Playlist(
+                    playlist_id=playlist_id, track_id=i
+                )
+                db.session.add(update_playlist_track)
+            db.session.commit()
+            flash("Playlist edited✌️")
 
         return redirect(url_for("user.user_playlists", user=current_user.username))
 
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     tracks = Tracks.query.order_by(Tracks.track_name).all()
     playlists = (
-        db.session.query(Playlist, User_Playlist, Tracks)
+        db.session.query(Playlist, User_Playlist)
         .filter(Playlist.user == current_user.id)
         .join(User_Playlist, User_Playlist.playlist_id == Playlist.playlist_id)
-        .join(Tracks, User_Playlist.playlist_id == Tracks.track_id)
         .all()
     )
+    playlist_dict = dict()
+    for x, y in playlists:
+        p_id = x.playlist_id
+        t_id = y.track_id
+        if p_id not in playlist_dict.keys():
+            playlist_dict[p_id] = [t_id]
+        else:
+            playlist_dict[p_id].append(t_id)
+
     return render_template(
         "user/user_playlists.html",
         creator_signup_status=creator,
         tracks=tracks,
         playlists=playlists,
+        playlist_dict=playlist_dict,
     )
 
 
