@@ -2,7 +2,8 @@ from flask import redirect, url_for, render_template, request, Flask, flash, Blu
 from ..database import db
 import os
 from ..models import *
-from sqlalchemy import desc
+from sqlalchemy import desc, func
+import threading
 from datetime import datetime
 from flask_login import (
     UserMixin,
@@ -46,8 +47,10 @@ def search_result(query):
     return creators, albums, songs, genre
 
 
+import matplotlib
+
+matplotlib.use("agg")
 from matplotlib import pyplot as plt
-import numpy
 
 
 def get_data_vis_assets_path():
@@ -130,7 +133,9 @@ def alert(user):
 @admin.route("/admin/<user>/stats", methods=["GET"])
 @login_required
 def stats(user):
-    plotter()
+    t = threading.Thread(target=plotter())
+    t.start()
+    t.join()
     return render_template("admin/stats.html")
 
 
@@ -209,9 +214,36 @@ def creator_profile(user, creator):
 @admin.route("/admin/a/<user>/search", methods=["POST", "GET"])
 @login_required
 def search(user):
+    query = request.form.get("search")
     if request.method == "POST":
         print(request.form)
-    query = request.form.get("search")
+        delete_song = request.form.get("delete_song")
+        delete_album = request.form.get("delete_album")
+        if delete_song == "yes":
+            song_id = request.form.get("song_id")
+            song2delete = Tracks.query.filter_by(track_id=song_id).first()
+            creator = Creator.query.filter_by(creator_id=song2delete.creator_id).first()
+            creator.songs_published -= 1
+            if song2delete.album_id == 0:
+                creator.no_of_singles -= 1
+            elif song2delete.album_id >= 1:
+                album = Album.query.filter_by(album_id=song2delete.album_id)
+                album.no_of_tracks -= 1
+            db.session.delete(song2delete)
+            db.session.commit()
+        elif delete_album == "yes":
+            album_id = request.form.get("album_id")
+            album = Album.query.filter_by(album_id=album_id).first()
+            tracks = Tracks.query.filter_by(album_id=album_id).all()
+            creator = Creator.query.filter_by(creator_id=album.creator_id).first()
+            no_of_album_tracks = len(tracks)
+            creator.songs_published -= no_of_album_tracks
+            for track in tracks:
+                db.session.delete(track)
+            creator.no_of_albums -= 1
+            db.session.delete(album)
+            db.session.commit()
+
     creators, albums, songs, genre = search_result(query)
     return render_template(
         "admin/search.html",
@@ -231,6 +263,8 @@ def plotter():
     creator_count = Creator.query.count()
     x = ["users", "admin", "creators"]
     y = [user_count, admin_count, creator_count]
+    plt.xlabel("User Type")
+    plt.ylabel("Count")
     plt.bar(x, y)
 
     filename = "user_cat"
@@ -241,11 +275,55 @@ def plotter():
     album_count = Album.query.count()
     singles_count = Tracks.query.filter_by(album_id=0).count()
     album_tracks_count = Tracks.query.count() - singles_count - 1
-    x = ["Albums", "Singles", "Album Songs"]
+    x = ["Albums", "Singles", "Album Tracks"]
     y = [album_count, singles_count, album_tracks_count]
     plt.bar(x, y)
+    plt.xlabel("Music Catalogue")
+    plt.ylabel("Count")
 
     filename = "song_cat"
     filepath = os.path.join(assets_path, filename)
     plt.savefig(filepath)
     plt.close()
+
+    genre_types_count = (
+        db.session.query(Tracks.genre, func.count(Tracks.genre))
+        .group_by(Tracks.genre)
+        .all()
+    )
+
+    genre_types, count = zip(*genre_types_count)
+    plt.bar(genre_types, count)
+    plt.xlabel("Genre")
+    plt.ylabel("Count")
+    filename = "genre_count"
+    filepath = os.path.join(assets_path, filename)
+    plt.savefig(filepath)
+    plt.close()
+
+    from datetime import date
+
+    join_dates = db.session.query(Users.date_joined).all()
+
+    user_count_by_date = {}
+    cumulative_users = []
+
+    for join_date in join_dates:
+        date_str = join_date
+        user_count_by_date[date_str] = user_count_by_date.get(date_str, 0) + 1
+        cumulative_users.append(
+            sum(user_count_by_date.values())
+        )  # Update cumulative count
+
+    dates, user_counts = zip(*sorted(user_count_by_date.items()))
+
+    plt.figure(figsize=(12, 6))
+    plt.plot(cumulative_users, dates)
+    plt.ylabel("Join Date")
+    plt.xlabel("Number of Users Joined")
+    filename = "users_gained"
+    filepath = os.path.join(assets_path, filename)
+    plt.savefig(filepath)
+    plt.close()
+
+    return

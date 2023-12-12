@@ -2,6 +2,7 @@ from flask import redirect, url_for, render_template, request, Flask, flash, Blu
 from flask import current_app as app
 from ..database import db
 from ..models import Users
+from datetime import datetime
 from flask_login import (
     UserMixin,
     LoginManager,
@@ -59,11 +60,14 @@ def signup():
         email = request.form["email"]
         password = request.form["password"]
         user = Users.query.filter_by(email=email).first()
+        date = datetime.now().date()
         if user is not None and user.email == email:
             flash("Email already exists")
             return redirect(url_for("auth.signup"))
         else:
-            new_user = Users(username=username, email=email, password=password)
+            new_user = Users(
+                username=username, email=email, password=password, date_joined=date
+            )
             db.session.add(new_user)
             db.session.commit()
 
