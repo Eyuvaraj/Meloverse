@@ -58,6 +58,9 @@
                             <h5 class="card-title">{{ track.track_name }}{% if track.album_id != 0 %} (album:
                                 {{album.album_name}}) {% endif %}</h5>
                         </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Last updated 3 mins ago</small>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -75,6 +78,9 @@
                         </a>
                         <div class="card-body">
                             {{ creator.bio }}
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Last updated 3 mins ago</small>
                         </div>
                     </div>
                 </div>
@@ -119,6 +125,9 @@
                                     {% endfor %}
                                 </ul>
                             </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Last updated 3 mins ago</small>
                         </div>
                     </div>
                 </div>

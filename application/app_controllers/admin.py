@@ -209,6 +209,8 @@ def creator_profile(user, creator):
 @admin.route("/admin/a/<user>/search", methods=["POST", "GET"])
 @login_required
 def search(user):
+    if request.method == "POST":
+        print(request.form)
     query = request.form.get("search")
     creators, albums, songs, genre = search_result(query)
     return render_template(

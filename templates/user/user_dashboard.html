@@ -81,47 +81,47 @@
         <h5 class="card-title">ALBUMS</h5>
         <hr>
         <div class="row">
-          <div class="card-group">
-            {% for item in albums %}
-            {% if item %}
-            <div class="col-4">
-              <div class="card mb-2 mx-1">
-                {% for album, track_, creator in item %}
-                {% if loop.first %}
-                <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
-                  style="text-decoration: none;">
-                  <div class="card-header">{{ creator.creator_name }} - {{ album.genre.upper() }} Album </div>
-                </a>
-                <div class="card-body">
-                  <h5 class="card-title">{{ album.album_name.upper() }}</h5>
-                  <h6 class="card-subtitle mb-2 text-muted text-small">{{ album.description }}</h6>
-                  <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle card-title btn btn-dark" type="button"
-                      data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
-                      Tracks
-                    </button>
-                    <ul class="dropdown-menu track-dropdown">
-                      {% for album_, track, creator_ in item %}
-                      <li>
-                        <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
-                          data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
-                          data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
-                          data-current-user-name="{{ current_user.username }}" data-lyrics="{{ track.lyrics }}"
-                          data-current-user-id="{{ current_user.id }}" data-track-file="{{ track.track_file }}">
-                          {{ track.track_name }}
-                        </a>
-                      </li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                </div>
-                {% endif %}
-                {% endfor %}
+          {% for item in albums %}
+          {% if item %}
+          <div class="col-4">
+            <div class="card mb-2 mx-1 h-100">
+              {% for album, track_, creator in item %}
+              {% if loop.first %}
+              <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                style="text-decoration: none;">
+                <div class="card-header">{{ creator.creator_name }} - {{ album.genre.upper() }} Album </div>
+              </a>
+              <div class="card-body">
+                <h5 class="card-title">{{ album.album_name.upper() }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted text-small">{{ album.description }}</h6>
               </div>
+              <div class="card-footer bg-transparent text-center">
+                <div class="dropdown">
+                  <a class="btn dropdown-toggle card-title btn btn-dark" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" style="text-decoration: none;">
+                    Tracks
+                  </a>
+                  <ul class="dropdown-menu track-dropdown">
+                    {% for album_, track, creator_ in item %}
+                    <li>
+                      <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                        data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                        data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
+                        data-current-user-name="{{ current_user.username }}" data-lyrics="{{ track.lyrics }}"
+                        data-current-user-id="{{ current_user.id }}" data-track-file="{{ track.track_file }}">
+                        {{ track.track_name }}
+                      </a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
             </div>
-            {% endif %}
-            {% endfor %}
           </div>
+          {% endif %}
+          {% endfor %}
         </div>
       </div>
     </div>

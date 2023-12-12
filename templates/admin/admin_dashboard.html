@@ -180,7 +180,7 @@
         var footer = document.getElementById('footer');
         var stickyFooter = document.querySelector('.sticky-footer');
 
-        var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
+        var creatorProfileUrl = `/admin/${currentUserId}/creator/${creatorId}`;
 
         document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
 
@@ -220,7 +220,7 @@
 
         console.log('Selected Track:', creator);
 
-        var creatorProfileUrl = `/user/${currentUserId}/creator/${creatorId}`;
+        var creatorProfileUrl = `/admin/${currentUserId}/creator/${creatorId}`;
 
         document.getElementById('track-details').innerHTML = `${artists}, <a href="${creatorProfileUrl}" style="text-decoration: none;">${creator}</a>`;
 
