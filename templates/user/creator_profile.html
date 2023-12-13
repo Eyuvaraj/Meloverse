@@ -99,7 +99,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-outline-danger btn-sm">
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        data-track-id="{{ song.track_id }}" data-track-file="{{ song.track_file }}"
+                                        data-track-name="{{ song.track_name }}" data-artists="{{ song.artists }}"
+                                        data-creatorid="{{ creator.creator_id }}" data-lyrics="{{ song.lyrics }}"
+                                        data-creator="{{ creator.creator_name }}"
+                                        data-current-user-name="{{ current_user.username }}"
+                                        data-current-user-id="{{ current_user.id }}" style="position: relative;">
                                         Play
                                     </button>
                                 </td>
@@ -138,8 +144,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#deletesong_{{ song.track_id }}">
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                        data-track-id="{{ song.track_id }}" data-track-file="{{ song.track_file }}"
+                                        data-track-name="{{ song.track_name }}" data-artists="{{ song.artists }}"
+                                        data-creatorid="{{ creator.creator_id }}" data-lyrics="{{ song.lyrics }}"
+                                        data-creator="{{ creator.creator_name }}"
+                                        data-current-user-name="{{ current_user.username }}"
+                                        data-current-user-id="{{ current_user.id }}" style="position: relative;">
                                         Play
                                     </button>
                                 </td>
@@ -183,15 +194,25 @@
                                 <td>{{ album.no_of_tracks }}</td>
                                 <td>
                                     <div class="dropdown">
-                                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle"
-                                            data-bs-toggle="dropdown">
+                                        <button class="btn dropdown-toggle btn-sm btn-outline-primary" type="button"
+                                            data-bs-toggle="dropdown" style="text-decoration: none;">
                                             Tracks
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            {% for song, album_name in songs %}
-                                            {% if album_name == album.album_name %}
-                                            <li class="dropdown-item">{{ song.track_name }}</li>
-                                            {% endif %}
+                                        <ul class="dropdown-menu track-dropdown">
+                                            {% for album, track in album_tracks %}
+                                            <li>
+                                                <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                                                    data-track-name="{{ track.track_name }}"
+                                                    data-artists="{{ track.artists }}"
+                                                    data-creator-id="{{ track.creator_id }}"
+                                                    data-creator="{{ creator.creator_name }}"
+                                                    data-current-user-name="{{ current_user.username }}"
+                                                    data-lyrics="{{ track.lyrics }}"
+                                                    data-current-user-id="{{ current_user.id }}"
+                                                    data-track-file="{{ track.track_file }}">
+                                                    {{ track.track_name }}
+                                                </a>
+                                            </li>
                                             {% endfor %}
                                         </ul>
                                     </div>

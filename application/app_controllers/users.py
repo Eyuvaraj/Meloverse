@@ -70,7 +70,7 @@ def user_dashboard(user):
         db.session.query(Tracks, Creator)
         .filter(Tracks.album_id == 0, Tracks.track_id >= random_tracks_no)
         .join(Creator, Tracks.creator_id == Creator.creator_id)
-        .limit(9)
+        .limit(6)
         .all()
     )
 
@@ -248,6 +248,7 @@ def search(user):
         query = request.form.get("search")
         creators, albums, tracks, genre = search_query(query)
 
+    creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template(
         "user/search.html",
         creators=creators,
@@ -255,6 +256,7 @@ def search(user):
         tracks=tracks,
         query=query,
         genre=genre,
+        creator_signup_status=creator,
     )
 
 
@@ -628,7 +630,7 @@ def creator_profile(user, creator):
     )
 
     tracks_alias = aliased(Tracks)
-
+    creator_or_not = Creator.query.filter_by(creator_id=current_user.id).first()
     album_obj = (
         db.session.query(
             Album,
@@ -649,6 +651,15 @@ def creator_profile(user, creator):
         )
         .all()
     )
+    album_tracks = (
+        db.session.query(Album, Tracks)
+        .filter(Album.creator_id == creator.creator_id)
+        .join(Album, Album.album_id == Tracks.album_id)
+        .all()
+    )
+
+    for i in album_tracks:
+        print(i)
     return render_template(
         "user/creator_profile.html",
         creator=creator,
@@ -656,6 +667,8 @@ def creator_profile(user, creator):
         songs=songs,
         albums_obj=album_obj,
         follow_status=follow_status,
+        creator_signup_status=creator_or_not,
+        album_tracks=album_tracks,
     )
 
 
