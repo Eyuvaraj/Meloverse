@@ -171,7 +171,12 @@ def creator_profile(user, creator):
         print(request.form)
 
     singles = Tracks.query.filter_by(creator_id=creator.creator_id, album_id=0).all()
-
+    album_tracks = (
+        db.session.query(Album, Tracks)
+        .filter(Album.creator_id == creator.creator_id)
+        .join(Album, Album.album_id == Tracks.album_id)
+        .all()
+    )
     songs = (
         db.session.query(Tracks, Album.album_name)
         .join(Album, Tracks.album_id == Album.album_id)
@@ -208,6 +213,7 @@ def creator_profile(user, creator):
         albums_obj=album_obj,
         singles=singles,
         songs=songs,
+        album_tracks=album_tracks,
     )
 
 

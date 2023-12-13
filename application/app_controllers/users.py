@@ -658,8 +658,6 @@ def creator_profile(user, creator):
         .all()
     )
 
-    for i in album_tracks:
-        print(i)
     return render_template(
         "user/creator_profile.html",
         creator=creator,
@@ -672,11 +670,28 @@ def creator_profile(user, creator):
     )
 
 
-# @user.route("/update_timeline", methods=["POST"])
-# @login_required
-# def update_timeline():
-#     user_id = request.form.get("user_id")
-#     track_id = request.form.get("track_id")
-#     album_id = request.form.get("album_id")
-
-#     print(user_id, track_id, album_id)
+@user.route("/update_timeline", methods=["POST"])
+@login_required
+def update_timeline():
+    if (
+        request.method == "POST"
+        and request.headers.get("Content-Type") == "application/json"
+    ):
+        try:
+            data = request.get_json()
+            user_id = data.get("userId")
+            track_id = data.get("trackId")
+            track = Tracks.query.filter_by(track_id=track_id).first()
+            event_time = datetime.now().date()
+            track.plays += 1
+            new_event = usage_timeline(
+                user_id=user_id,
+                track_id=track_id,
+                album_id=track.album_id,
+                date_time=event_time,
+            )
+            db.session.add(new_event)
+            db.session.commit()
+        except Exception as e:
+            pass
+        return jsonify({"message": "Usage timeline updated successfully"}), 200
