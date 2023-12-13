@@ -172,14 +172,27 @@ def user_playlists(user):
         .join(User_Playlist, User_Playlist.playlist_id == Playlist.playlist_id)
         .all()
     )
+
+    playlist_Ids = []
     playlist_dict = dict()
     for x, y in playlists:
         p_id = x.playlist_id
+        playlist_Ids.append(p_id)
         t_id = y.track_id
         if p_id not in playlist_dict.keys():
             playlist_dict[p_id] = [t_id]
         else:
             playlist_dict[p_id].append(t_id)
+
+    playlist_tracks = []
+    for i in set(playlist_Ids):
+        playlist_tracks += (
+            db.session.query(User_Playlist, Tracks, Creator.creator_name)
+            .filter(User_Playlist.playlist_id == i)
+            .join(Tracks, User_Playlist.track_id == Tracks.track_id)
+            .join(Creator, Tracks.creator_id == Creator.creator_id)
+            .all()
+        )
 
     return render_template(
         "user/user_playlists.html",
@@ -187,6 +200,7 @@ def user_playlists(user):
         tracks=tracks,
         playlists=playlists,
         playlist_dict=playlist_dict,
+        playlist_tracks=playlist_tracks,
     )
 
 
@@ -694,4 +708,28 @@ def update_timeline():
             db.session.commit()
         except Exception as e:
             pass
-        return jsonify({"message": "Usage timeline updated successfully"}), 200
+        return jsonify({"message": "Usage timeline updated"}), 200
+
+
+@user.route("/update_like_dislike", methods=["POST"])
+@login_required
+def update_like_dislike():
+    if (
+        request.method == "POST"
+        and request.headers.get("Content-Type") == "application/json"
+    ):
+        try:
+            data = request.get_json()
+            user_id = data.get("userId")
+            track_id = data.get("trackId")
+            like_status = data.get("likeStatus")
+            # Add your logic for handling like/dislike here
+            print(
+                f"Received like/dislike request for user {user_id}, track {track_id}, status: {like_status}"
+            )
+            return jsonify({"message": "Like/Dislike updated successfully"}), 200
+        except Exception as e:
+            print(f"Error processing like/dislike request: {str(e)}")
+            return jsonify({"error": "Failed to update like/dislike status"}), 500
+    else:
+        return jsonify({"error": "Invalid request"}), 400

@@ -91,11 +91,31 @@
                             </span>
                             <div>
                                 <button type="button" class="btn btn-sm btn-primary">Play</button>
+                                <button class="btn dropdown-toggle btn-sm btn-secondary" type="button"
+                                    data-bs-toggle="dropdown" style="text-decoration: none;">
+                                    Tracks
+                                </button>
+                                <ul class="dropdown-menu track-dropdown">
+                                    {% for playlist, track, creator in playlist_tracks %}
+                                    <li>
+                                        <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                                            data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                                            data-creator-id="{{ track.creator_id }}" data-creator="{{ creator }}"
+                                            data-current-user-name="{{ current_user.username }}"
+                                            data-lyrics="{{ track.lyrics }}" data-likes="{{ track.likes }}"
+                                            data-dislikes="{{ track.dislikes }}" data-plays="{{ track.plays }}"
+                                            data-current-user-id="{{ current_user.id }}"
+                                            data-track-file="{{ track.track_file }}">
+                                            {{ track.track_name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
 
                                 <button type="button" class="btn btn-sm btn-light" data-bs-toggle="tooltip"
                                     data-bs-placement="top" title="Add to favorites">❤️</button>
 
-                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#editPlaylist_{{ playlist.playlist_id }}">Edit✏️</button>
 
                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"

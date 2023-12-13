@@ -103,7 +103,8 @@
                                         data-track-id="{{ song.track_id }}" data-track-file="{{ song.track_file }}"
                                         data-track-name="{{ song.track_name }}" data-artists="{{ song.artists }}"
                                         data-creatorid="{{ creator.creator_id }}" data-lyrics="{{ song.lyrics }}"
-                                        data-creator="{{ creator.creator_name }}"
+                                        data-creator="{{ creator.creator_name }}" data-plays="{{ track.plays }}"
+                                        data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}"
                                         data-current-user-name="{{ current_user.username }}"
                                         data-current-user-id="{{ current_user.id }}" style="position: relative;">
                                         Play
@@ -150,7 +151,9 @@
                                         data-creatorid="{{ creator.creator_id }}" data-lyrics="{{ song.lyrics }}"
                                         data-creator="{{ creator.creator_name }}"
                                         data-current-user-name="{{ current_user.username }}"
-                                        data-current-user-id="{{ current_user.id }}" style="position: relative;">
+                                        data-plays="{{ track.plays }}" data-dislikes="{{ track.dislikes }}"
+                                        data-likes="{{ track.likes }}" data-current-user-id="{{ current_user.id }}"
+                                        style="position: relative;">
                                         Play
                                     </button>
                                 </td>
@@ -207,7 +210,8 @@
                                                     data-creator-id="{{ track.creator_id }}"
                                                     data-creator="{{ creator.creator_name }}"
                                                     data-current-user-name="{{ current_user.username }}"
-                                                    data-lyrics="{{ track.lyrics }}"
+                                                    data-lyrics="{{ track.lyrics }}" data-plays="{{ track.plays }}"
+                                                    data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}"
                                                     data-current-user-id="{{ current_user.id }}"
                                                     data-track-file="{{ track.track_file }}">
                                                     {{ track.track_name }}

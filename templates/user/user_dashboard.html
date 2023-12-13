@@ -109,7 +109,8 @@
                         data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
                         data-trackId="{{ track.track_id }}" data-current-user-name="{{ current_user.username }}"
                         data-lyrics="{{ track.lyrics }}" data-current-user-id="{{ current_user.id }}"
-                        data-track-file="{{ track.track_file }}">
+                        data-track-file="{{ track.track_file }}" data-plays="{{ track.plays }}"
+                        data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
                         {{ track.track_name }}
                       </a>
                     </li>
@@ -127,6 +128,7 @@
       </div>
     </div>
 
+    {% if singles %}
     <div class="card border-dark mb-3">
       <div class="card-body">
         <h5 class="card-title">SINGLES</h5>
@@ -145,6 +147,7 @@
               </div>
               <div class="card-body stretched-link" data-track-id="{{ track.track_id }}"
                 data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
+                data-plays="{{ track.plays }}" data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}"
                 data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
                 data-lyrics="{{ track.lyrics }}" data-creator="{{ creator.creator_name }}"
                 data-trackId="{{ track.track_id }}" data-current-user-name="{{ current_user.username }}"
@@ -157,6 +160,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
     <hr>
     <br><br><br>
   </div>
@@ -183,9 +187,15 @@
           <source src="" type="audio/mp3">
         </audio>
       </div>
-      <div class="col-2">
-        <div class="btn-group dropup-center dropup">
-          <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <div class="col-2 mt-2">
+        <button class="btn btn-sm" type="button" id="likes" data-like-status="like">
+          👍
+        </button>
+        <button class="btn btn-sm" type="button" id="dislikes" data-like-status="dislike">
+          👎
+        </button>
+        <div class="dropup-center dropup">
+          <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
             Lyrics
           </button>
           <small class="mx-2 my-2" style="max-width: 350px;">
@@ -218,33 +228,82 @@
         throw new Error('Failed to update timeline');
       }
 
-      // Process successful response
       console.log('Timeline updated successfully');
     } catch (error) {
-      // Handle error
       console.error('Error updating timeline:', error.message);
+    }
+  }
+
+  async function updateLikeDislike(userId, trackId, likeStatus) {
+    try {
+      const response = await fetch('/update_like_dislike', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          trackId: trackId,
+          likeStatus: likeStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update like/dislike status');
+      }
+
+      console.log(`Successfully updated ${likeStatus === 'like' ? 'like' : 'dislike'} status`);
+    } catch (error) {
+      console.error('Error updating like/dislike status:', error.message);
     }
   }
 
   function handleInteraction(element) {
     var trackId = element.dataset.trackId;
     var currentUserId = element.dataset.currentUserId;
-
     var footer = document.getElementById('footer');
     var stickyFooter = document.querySelector('.sticky-footer');
-
-    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a>`;
-
     document.getElementById('selected-track-name').innerText = element.dataset.trackName;
+
+
+    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a> | Views: ${plays}`;
+    var likes = element.dataset.likes;
+    var dislikes = element.dataset.dislikes;
+    var plays = element.dataset.plays;
+    var likesButton = document.getElementById('likes');
+    var dislikesButton = document.getElementById('dislikes');
+    likesButton.innerText = `👍 ${likes}`;
+    dislikesButton.innerText = `👎 ${dislikes}`;
     document.getElementById('audio-player').src = "{{ url_for('static', filename='uploads/') }}" + element.dataset.trackFile;
 
     var lyricsContainer = document.getElementById('lyrics');
-    lyricsContainer.innerHTML = element.dataset.lyrics || "Lyrics not provided by the creator.";
+    lyricsContainer.innerHTML = element.dataset.lyrics || "Lyrics not provided";
 
     updateTimeline(currentUserId, trackId);
     footer.style.display = 'block';
     stickyFooter.style.display = 'block';
 
+    const likeStatus = element.id === 'likes' ? 'like' : 'dislike';
+
+    var likesButtonHandler = document.getElementById('likes');
+    likesButtonHandler.addEventListener('click', async function () {
+      try {
+        await updateLikeDislike(currentUserId, trackId, 'like');
+        console.log('Successfully updated like for track', element.dataset.trackName);
+      } catch (error) {
+        console.error('Error updating like:', error.message);
+      }
+    });
+
+    var dislikesButtonHandler = document.getElementById('dislikes');
+    dislikesButtonHandler.addEventListener('click', async function () {
+      try {
+        await updateLikeDislike(currentUserId, trackId, 'dislike');
+        console.log('Successfully updated dislike for track', element.dataset.trackName);
+      } catch (error) {
+        console.error('Error updating dislike:', error.message);
+      }
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
