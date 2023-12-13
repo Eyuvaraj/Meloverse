@@ -64,7 +64,7 @@
       <div class="row row-cols-2">
         <div class="col">
           <div class="card h-100">
-            <h5 class="card-header">User Stats👤</h5>
+            <h5 class="card-header">User Stats🌸</h5>
             <div class="card-body">
               <table class="table table-hover">
                 <tr>
@@ -106,7 +106,7 @@
         </div>
       </div>
     </section>
-    <section class="mx-2 my-2">
+    <section class="mx-1 my-2">
       <div class="row row-cols-4">
         <div class="col">
           <div class="card h-100">
@@ -115,7 +115,7 @@
               {% if top_creators %}
               <ul class="list-group list-group-flush">
                 {% for creator in top_creators %}
-                <li class="list-group-item"><a style="text-decoration: none;"
+                <li class="list-group-item list-group-item-action"><a style="text-decoration: none;"
                     href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}">{{
                     creator.creator_name }}</a></li>
                 {% endfor %}
@@ -126,29 +126,55 @@
         </div>
         <div class="col">
           <div class="card h-100">
-            <h5 class="card-header">Trending Creators</h5>
+            <h5 class="card-header">Trending Creators🧐</h5>
             <div class="card-body">
-              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+              {% if trending_creators %}
+              <ul class="list-group list-group-flush">
+                {% for creator, creator_id in trending_creators.items() %}
+                <li class="list-group-item list-group-item-action"><a style="text-decoration: none;"
+                    href="{{ url_for('admin.creator_profile', user=current_user, creator=creator_id) }}">{{
+                    creator }}</a></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="col">
           <div class="card h-100">
-            <h5 class="card-header">Trending Albums</h5>
+            <h5 class="card-header">Trending Albums🔺</h5>
             <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                content.
-                This card has even longer content than the first to show that equal height action.</p>
+              {% if trending_albums %}
+              <table class="table table-hover">
+                <tbody>
+                  {% for album, count in trending_albums.items() %}
+                  <tr>
+                    <td>{{ album }}</td>
+                    <td>{{ count }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="col">
           <div class="card h-100">
-            <h5 class="card-header">Trending Songs</h5>
+            <h5 class="card-header">Trending Songs🔺</h5>
             <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-                content.
-                This card has even longer content than the first to show that equal height action.</p>
+              {% if trending_songs %}
+              <table class="table table-hover">
+                <tbody>
+                  {% for song, count in trending_songs.items() %}
+                  <tr>
+                    <td>{{ song }}</td>
+                    <td>{{ count }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
             </div>
           </div>
         </div>

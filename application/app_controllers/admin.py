@@ -4,7 +4,7 @@ import os
 from ..models import *
 from sqlalchemy import desc, func
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_login import (
     UserMixin,
     LoginManager,
@@ -70,7 +70,49 @@ def admin_dashboard(user):
     tracks_count = Tracks.query.count()
     singles_count = Tracks.query.filter_by(album_id="0").count()
     top_creators = Creator.query.order_by(desc(Creator.followers)).limit(3).all()
-    treading_creators = Creator.query.count()
+    lastest_record = usage_timeline.query.order_by(
+        usage_timeline.timeline_id.desc()
+    ).first()
+    lastest_record_date = lastest_record.date_time
+    trends_start_date = lastest_record_date - timedelta(days=7)
+    song_trends = (
+        db.session.query(usage_timeline.track_id, func.count().label("count"))
+        .filter(usage_timeline.date_time >= trends_start_date)
+        .group_by(usage_timeline.track_id)
+        .order_by(func.count().desc())
+        .limit(3)
+        .all()
+    )
+    album_trends = (
+        db.session.query(usage_timeline.album_id, func.count().label("count"))
+        .filter(usage_timeline.date_time >= trends_start_date)
+        .group_by(usage_timeline.album_id)
+        .order_by(func.count().desc())
+        .limit(4)
+        .all()
+    )
+    trending_creators = dict()
+    trending_songs = dict()
+    trending_albums = dict()
+
+    for track_id, count in song_trends:
+        track_info = (
+            db.session.query(Tracks, Creator)
+            .filter(Tracks.track_id == track_id)
+            .join(Creator, Creator.creator_id == Tracks.creator_id)
+            .first()
+        )
+
+        trending_creators[
+            track_info.Creator.creator_name
+        ] = track_info.Creator.creator_id
+        trending_songs[track_info.Tracks.track_name] = count
+
+    for album_id, count in album_trends:
+        if album_id != 0:
+            album_info = db.session.query(Album).filter_by(album_id=album_id).first()
+            trending_albums[album_info.album_name] = count
+
     return render_template(
         "admin/admin_dashboard.html",
         user_count=user_count,
@@ -80,6 +122,9 @@ def admin_dashboard(user):
         tracks_count=tracks_count,
         singles_count=singles_count,
         top_creators=top_creators,
+        trending_creators=trending_creators,
+        trending_albums=trending_albums,
+        trending_songs=trending_songs,
     )
 
 
