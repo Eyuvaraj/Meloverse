@@ -96,26 +96,34 @@
                 <h6 class="card-subtitle mb-2 text-muted text-small">{{ album.description }}</h6>
               </div>
               <div class="card-footer bg-transparent text-center">
-                <div class="dropdown">
-                  <a class="btn dropdown-toggle card-title btn btn-dark" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false" style="text-decoration: none;">
-                    Tracks
-                  </a>
-                  <ul class="dropdown-menu track-dropdown">
-                    {% for album_, track, creator_ in item %}
-                    <li>
-                      <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
-                        data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
-                        data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
-                        data-trackId="{{ track.track_id }}" data-current-user-name="{{ current_user.username }}"
-                        data-lyrics="{{ track.lyrics }}" data-current-user-id="{{ current_user.id }}"
-                        data-track-file="{{ track.track_file }}" data-plays="{{ track.plays }}"
-                        data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
-                        {{ track.track_name }}
-                      </a>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                <div class="btn-group" role="group">
+                  {% if album.album_id not in liked_albums %}
+                  <button type="button" class="btn btn-dark btn-sm Albumlike" data-album-id="{{ album.album_id }}"><span
+                      class="bi bi-hand-thumbs-up"></span></button>
+                  {% else %}
+                  <button type="button" class="btn btn-light btn-sm Albumlike"
+                    data-album-id="{{ album.album_id }}"><span class="bi bi-hand-thumbs-up"></span></button>
+                  {% endif %}
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                      Tracks
+                    </button>
+                    <ul class="dropdown-menu track-dropdown">
+                      {% for album_, track, creator_ in item %}
+                      <li>
+                        <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                          data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                          data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
+                          data-trackId="{{ track.track_id }}" data-current-user-name="{{ current_user.username }}"
+                          data-lyrics="{{ track.lyrics }}" data-current-user-id="{{ current_user.id }}"
+                          data-track-file="{{ track.track_file }}" data-plays="{{ track.plays }}"
+                          data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
+                          {{ track.track_name }}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </div>
               </div>
               {% endif %}
@@ -266,10 +274,10 @@
     document.getElementById('selected-track-name').innerText = element.dataset.trackName;
 
 
-    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a> | Views: ${plays}`;
     var likes = element.dataset.likes;
     var dislikes = element.dataset.dislikes;
     var plays = element.dataset.plays;
+    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a> | Plays: ${plays}`;
     var likesButton = document.getElementById('likes');
     var dislikesButton = document.getElementById('dislikes');
     likesButton.innerText = `👍 ${likes}`;
@@ -335,6 +343,37 @@
   });
 </script>
 
+<script>
+  const likeButtonschange = document.querySelectorAll('.Albumlike');
+  likeButtonschange.forEach(button => {
+    button.addEventListener('click', function () {
+      this.classList.toggle('btn-dark');
+      this.classList.toggle('btn-light');
+    });
+  });
+
+  const likeButtons = document.querySelectorAll('.Albumlike');
+
+  likeButtons.forEach(button => {
+    button.addEventListener('click', async function () {
+      try {
+        const albumId = this.getAttribute('data-album-id');
+
+        const response = await fetch('/album_like', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            album_id: albumId,
+          }),
+        });
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  });
+</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {

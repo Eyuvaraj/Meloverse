@@ -83,20 +83,20 @@
                         <h5 class="text-center">MY PLAYLISTS</h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        {% for playlist, usr_playlist in playlists %}
+                        {% for playlist, usr_playlist, fav_playlist in playlists %}
                         {% if loop.changed(playlist.playlist_id) %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span>
                                 {{ playlist.playlist_name }}
                             </span>
                             <div>
-                                <button type="button" class="btn btn-sm btn-primary">Play</button>
                                 <button class="btn dropdown-toggle btn-sm btn-secondary" type="button"
                                     data-bs-toggle="dropdown" style="text-decoration: none;">
                                     Tracks
                                 </button>
                                 <ul class="dropdown-menu track-dropdown">
-                                    {% for playlist, track, creator in playlist_tracks %}
+                                    {% for p, track, creator in playlist_tracks %}
+                                    {% if p.playlist_id==playlist.playlist_id %}
                                     <li>
                                         <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
                                             data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
@@ -109,11 +109,21 @@
                                             {{ track.track_name }}
                                         </a>
                                     </li>
+                                    {% endif %}
                                     {% endfor %}
                                 </ul>
 
-                                <button type="button" class="btn btn-sm btn-light" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="Add to favorites">❤️</button>
+                                <form method="post">
+                                    <input type="hidden" name="playlist_id" value="{{ playlist.playlist_id }}">
+                                    <input type="hidden" name="reaction" value="like">
+                                    {% if fav_playlist != None %}
+                                    <button type="submit" class="btn btn-sm btn-outline-light"><span
+                                            class="bi-hand-thumbs-up-fill"></button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-sm btn-outline-light"><span
+                                            class="bi-hand-thumbs-up"></button>
+                                    {% endif %}
+                                </form>
 
                                 <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#editPlaylist_{{ playlist.playlist_id }}">Edit✏️</button>
@@ -159,7 +169,7 @@
         {% endif %}
 
         {% if playlists %}
-        {% for playlist, usr_playlist in playlists %}
+        {% for playlist, usr_playlist, fav_playlists in playlists %}
         {% if loop.changed(playlist.playlist_id) %}
         <div class="modal fade" id="editPlaylist_{{ playlist.playlist_id }}" tabindex="-1">
             <div class="modal-dialog">

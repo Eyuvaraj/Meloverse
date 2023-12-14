@@ -8,6 +8,7 @@ from flask import (
     Blueprint,
     jsonify,
 )
+
 from flask import current_app as app
 from ..database import db
 from ..models import *
@@ -30,6 +31,16 @@ def get_album(album_id):
         .all()
     )
     return album
+
+
+def get_single(single_id):
+    single = (
+        db.session.query(Tracks, Creator)
+        .filter(Tracks.album_id == 0, Tracks.track_id == single_id)
+        .join(Creator, Tracks.creator_id == Creator.creator_id)
+        .first()
+    )
+    return single
 
 
 def search_query(query):
@@ -65,21 +76,33 @@ def user_dashboard(user):
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     album_count = Album.query.count()
     track_count = abs(Tracks.query.count() - 2)
-    random_tracks_no = random.randint(1, track_count)
-    singles = (
-        db.session.query(Tracks, Creator)
-        .filter(Tracks.album_id == 0, Tracks.track_id >= random_tracks_no)
-        .join(Creator, Tracks.creator_id == Creator.creator_id)
-        .limit(6)
-        .all()
-    )
+    singles = []
+    while len(singles) <= 3:
+        random_tracks_no = random.randint(1, track_count)
+        single = get_single(random_tracks_no)
+        if single != None and single not in singles:
+            singles.append(single)
 
     albums = []
-    while len(albums) <= 2:
+    while len(albums) <= 3:
         random_album_no = random.randint(1, album_count)
         temp = get_album(random_album_no)
-        if temp != []:
+        if temp != None and temp not in albums:
             albums.append(temp)
+
+    album_liked = []
+    for item in albums:
+        for x, y, z in item:
+            album_id = x.album_id
+            user_id = current_user.id
+            item = Album_likes_stats.query.filter(
+                Album_likes_stats.user_id == user_id,
+                Album_likes_stats.album_id == album_id,
+            ).first()
+            if item != None:
+                album_liked.append(album_id)
+
+    print(album_liked)
 
     return render_template(
         "user/user_dashboard.html",
@@ -87,6 +110,7 @@ def user_dashboard(user):
         alert=alert,
         singles=singles,
         albums=albums,
+        liked_albums=set(album_liked),
     )
 
 
@@ -109,8 +133,73 @@ def creator_signup(user):
 @user.route("/meloverse/u/<user>/favorites", methods=["GET", "POST"])
 @login_required
 def favorites(user):
+    if request.method == "POST":
+        reaction = request.form.get("reaction")
+        if reaction == "unfollow":
+            artist_id = request.form.get("artist_id")
+            delete_record = whois_Followeing_who.query.filter(
+                whois_Followeing_who.fan_id == current_user.id,
+                whois_Followeing_who.fan_of == artist_id,
+            ).first()
+            db.session.delete(delete_record)
+            creator = Creator.query.filter_by(creator_id=artist_id).first()
+            creator.followers -= 1
+            db.session.commit()
+
+        elif reaction == "remove_playlist":
+            playlist_id = request.form.get("playlist_id")
+            delete_record = Playlist_likes_stats.query.filter(
+                Playlist_likes_stats.user_id == current_user.id,
+                Playlist_likes_stats.playlist_id == playlist_id,
+            ).first()
+            db.session.delete(delete_record)
+            db.session.commit()
+
+        return redirect(url_for("user.favorites", user=current_user.id))
+
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
-    return render_template("user/favorites.html", creator_signup_status=creator)
+
+    artists_followed_id = whois_Followeing_who.query.filter_by(
+        fan_id=current_user.id
+    ).all()
+
+    artists_followed = []
+    for i in artists_followed_id:
+        artist = Creator.query.filter_by(creator_id=i.fan_of).first()
+        artists_followed.append(artist)
+
+    fav_playlist_id = Playlist_likes_stats.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    fav_playlists, fav_playlist_tracks = [], []
+    for i in fav_playlist_id:
+        playlist = Playlist.query.filter_by(playlist_id=i.playlist_id).first()
+        fav_playlists.append(playlist)
+        fav_playlist_track = (
+            db.session.query(User_Playlist, Tracks, Creator)
+            .filter(User_Playlist.playlist_id == i.playlist_id)
+            .join(Tracks, User_Playlist.track_id == Tracks.track_id)
+            .join(Creator, Tracks.creator_id == Creator.creator_id)
+            .all()
+        )
+        for j in fav_playlist_track:
+            fav_playlist_tracks.append(j)
+
+    liked_album_id = Album_likes_stats.query.filter_by(user_id=current_user.id).all()
+    liked_albums = []
+    for i in liked_album_id:
+        album = get_album(i.album_id)
+        liked_albums.append(album)
+
+    return render_template(
+        "user/favorites.html",
+        creator_signup_status=creator,
+        artists_followed=artists_followed,
+        fav_playlists=fav_playlists,
+        fav_playlist_tracks=fav_playlist_tracks,
+        liked_albums=liked_albums,
+    )
 
 
 @user.route("/meloverse/u/<user>/my_playlists", methods=["GET", "POST"])
@@ -162,20 +251,40 @@ def user_playlists(user):
             db.session.commit()
             flash("Playlist edited✌️")
 
+        elif request.form.get("reaction") == "like":
+            playlist_id = request.form.get("playlist_id")
+            playlist_duplicate = Playlist_likes_stats.query.filter(
+                Playlist_likes_stats.user_id == current_user.id,
+                Playlist_likes_stats.playlist_id == playlist_id,
+            ).first()  # does playlist with same atributes already exist?
+            if playlist_duplicate == None:
+                new_record = Playlist_likes_stats(
+                    user_id=current_user.id, playlist_id=playlist_id
+                )
+                db.session.add(new_record)
+                db.session.commit()
+            else:
+                db.session.delete(playlist_duplicate)  # remove from fav
+                db.session.commit()
+
         return redirect(url_for("user.user_playlists", user=current_user.username))
 
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     tracks = Tracks.query.order_by(Tracks.track_name).all()
     playlists = (
-        db.session.query(Playlist, User_Playlist)
+        db.session.query(Playlist, User_Playlist, Playlist_likes_stats)
         .filter(Playlist.user == current_user.id)
         .join(User_Playlist, User_Playlist.playlist_id == Playlist.playlist_id)
+        .outerjoin(
+            Playlist_likes_stats,
+            Playlist.playlist_id == Playlist_likes_stats.playlist_id,
+        )
         .all()
     )
 
     playlist_Ids = []
     playlist_dict = dict()
-    for x, y in playlists:
+    for x, y, z in playlists:
         p_id = x.playlist_id
         playlist_Ids.append(p_id)
         t_id = y.track_id
@@ -262,6 +371,18 @@ def search(user):
         query = request.form.get("search")
         creators, albums, tracks, genre = search_query(query)
 
+    if albums:
+        for x, y, z in albums:
+            album_id = x.album_id
+            user_id = current_user.id
+            item = Album_likes_stats.query.filter(
+                Album_likes_stats.album_id == album_id,
+                Album_likes_stats.user_id == user_id,
+            ).first()
+            liked_albums = []
+            if item != None:
+                liked_albums.append(album_id)
+
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template(
         "user/search.html",
@@ -271,6 +392,7 @@ def search(user):
         query=query,
         genre=genre,
         creator_signup_status=creator,
+        liked_albums=set(liked_albums),
     )
 
 
@@ -733,3 +855,25 @@ def update_like_dislike():
             return jsonify({"error": "Failed to update like/dislike status"}), 500
     else:
         return jsonify({"error": "Invalid request"}), 400
+
+
+@user.route("/album_like", methods=["POST"])
+@login_required
+def album_like():
+    try:
+        data = request.get_json()
+        album_id = data.get("album_id")
+        user_id = current_user.id
+        already_liked = Album_likes_stats.query.filter_by(
+            album_id=album_id, user_id=user_id
+        ).first()
+        if already_liked == None:
+            new_record = Album_likes_stats(user_id=user_id, album_id=album_id)
+            db.session.add(new_record)
+            db.session.commit()
+        else:
+            db.session.delete(already_liked)
+            db.session.commit()
+        return jsonify({"success": True, "message": "Album liked"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})

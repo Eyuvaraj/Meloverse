@@ -99,29 +99,41 @@
                             <div class="card-header">{{ album.album_name }} - {{ creator.creator_name }}</div>
                         </a>
                         <div class="card-body">
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle card-title btn btn-dark" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
-                                    Tracks
-                                </button>
-                                <ul class="dropdown-menu track-dropdown">
-                                    {% for a, t, c in albums %}
-                                    {% if t.album_id == album.album_id %}
-                                    <li>
-                                        <a class="dropdown-item" href="#" data-track-id="{{ t.track_id }}"
-                                            data-track-name="{{ t.track_name }}" data-artists="{{ t.artists }}"
-                                            data-creator-id="{{ t.creator_id }}"
-                                            data-creator="{{ creator.creator_name }}"
-                                            data-current-user-name="{{ current_user.username }}"
-                                            data-current-user-id="{{ current_user.id }}" data-lyrics="{{ t.lyrics }}"
-                                            data-track-file="{{ t.track_file }}" data-plays="{{ track.plays }}"
-                                            data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
-                                            {{ t.track_name }}
-                                        </a>
-                                    </li>
-                                    {% endif %}
-                                    {% endfor %}
-                                </ul>
+                            <div class="btn-group" role="group">
+                                {% if album.album_id not in liked_albums %}
+                                <button type="button" class="btn btn-dark btn-sm Albumlike"
+                                    data-album-id="{{ album.album_id }}"><span
+                                        class="bi bi-hand-thumbs-up"></span></button>
+                                {% else %}
+                                <button type="button" class="btn btn-light btn-sm Albumlike"
+                                    data-album-id="{{ album.album_id }}"><span
+                                        class="bi bi-hand-thumbs-up"></span></button>
+                                {% endif %}
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-dark btn-sm dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Tracks
+                                    </button>
+                                    <ul class="dropdown-menu track-dropdown">
+                                        {% for album_, track, creator_ in albums %}
+                                        <li>
+                                            <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                                                data-track-name="{{ track.track_name }}"
+                                                data-artists="{{ track.artists }}"
+                                                data-creator-id="{{ track.creator_id }}"
+                                                data-creator="{{ creator.creator_name }}"
+                                                data-trackId="{{ track.track_id }}"
+                                                data-current-user-name="{{ current_user.username }}"
+                                                data-lyrics="{{ track.lyrics }}"
+                                                data-current-user-id="{{ current_user.id }}"
+                                                data-track-file="{{ track.track_file }}" data-plays="{{ track.plays }}"
+                                                data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
+                                                {{ track.track_name }}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

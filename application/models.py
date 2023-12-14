@@ -115,3 +115,26 @@ class usage_timeline(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     track_id = db.Column(db.Integer, db.ForeignKey("tracks.track_id"), default=0)
     album_id = db.Column(db.Integer, db.ForeignKey("album.album_id"), default=0)
+
+
+class Track_likes_stats(db.Model):
+    __tablename__ = "track_likes_stats"
+    stats_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    track_id = db.Column(db.Integer, db.ForeignKey("tracks.track_id"))
+    # 1 for like, -1 for dislike, default 0
+    value = db.Column(db.Integer, default=0)
+
+
+class Album_likes_stats(db.Model):
+    __tablename__ = "album_likes_stats"
+    stats_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    album_id = db.Column(db.Integer, db.ForeignKey("album.album_id"))
+
+
+class Playlist_likes_stats(db.Model):
+    __tablename__ = "playlist_likes_stats"
+    stats_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    playlist_id = db.Column(db.Integer, db.ForeignKey("playlist.playlist_id"))

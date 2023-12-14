@@ -2,8 +2,153 @@
 
 {% block body %}
 <div class="container">
+    {% if artists_followed %}
     <section>
-
+        <h4 class="text-center">ARTISTS YOU FOLLOW</h4>
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Artist</th>
+                    <th>Followers</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for artist in artists_followed %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="{{ url_for('user.creator_profile', user=current_user, creator=artist.creator_id) }}"
+                            style="text-decoration: none;">{{
+                            artist.creator_name }}</a></td>
+                    <td>{{ artist.followers }}</td>
+                    <td class="text-end">
+                        <form method="post">
+                            <input type="hidden" name="artist_id" value="{{ artist.creator_id }}">
+                            <input type="hidden" name="reaction" value="unfollow">
+                            <button type="submit" class="btn btn-outline-light btn-sm">Unfollow</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
     </section>
+    {% endif %}
+
+    {% if fav_playlists %}
+    <section>
+        <h4 class="text-center">YOUR FAVORITE PLAYLISTS</h4>
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Playlist</th>
+                    <th>Tracks</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for playlist in fav_playlists %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ playlist.playlist_name }}</td>
+                    <td>
+                        <button class="btn dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown"
+                            style="text-decoration: none;">
+                            Tracks
+                        </button>
+                        <ul class="dropdown-menu track-dropdown">
+                            {% for p, track, creator in fav_playlist_tracks %}
+                            {% if p.playlist_id==playlist.playlist_id %}
+                            <li>
+                                <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                                    data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                                    data-creator-id="{{ track.creator_id }}" data-creator="{{ creator }}"
+                                    data-current-user-name="{{ current_user.username }}"
+                                    data-lyrics="{{ track.lyrics }}" data-likes="{{ track.likes }}"
+                                    data-dislikes="{{ track.dislikes }}" data-plays="{{ track.plays }}"
+                                    data-current-user-id="{{ current_user.id }}"
+                                    data-track-file="{{ track.track_file }}">
+                                    {{ track.track_name }}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td class="text-end">
+                        <form method="post">
+                            <input type="hidden" name="playlist_id" value="{{ playlist.playlist_id }}">
+                            <input type="hidden" name="reaction" value="remove_playlist">
+                            <button type="submit" class="btn btn-outline-light btn-sm">Remove from Favorites</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    </section>
+    {% endif %}
+
+    {% if liked_tracks %}
+    <section>
+        <h4 class="text-center">TRACKS YOU LIKED</h4>
+    </section>
+    {% endif %}
+
+    {% if liked_albums %}
+    <section>
+        <h4 class="text-center">ALBUMS YOU LIKED</h4>
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Album</th>
+                    <th>Artist</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in liked_albums %}
+                {% for album, track, creator in item %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ album.album_name }}</td>
+                    <td>{{ creator.creator_name }}</td>
+                    <td><button type="button" class="btn btn-dark btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                            Tracks
+                        </button>
+                        <ul class="dropdown-menu track-dropdown">
+                            {% for album_, track, creator_ in item %}
+                            <li>
+                                <a class="dropdown-item" href="#" data-track-id="{{ track.track_id }}"
+                                    data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                                    data-creator-id="{{ track.creator_id }}" data-creator="{{ creator.creator_name }}"
+                                    data-trackId="{{ track.track_id }}"
+                                    data-current-user-name="{{ current_user.username }}"
+                                    data-lyrics="{{ track.lyrics }}" data-current-user-id="{{ current_user.id }}"
+                                    data-track-file="{{ track.track_file }}" data-plays="{{ track.plays }}"
+                                    data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
+                                    {{ track.track_name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-light btn-sm Albumlike"
+                            data-album-id="{{ album.album_id }}"><span class="bi bi-hand-thumbs-up"></span></button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    </section>
+    {% endif %}
 </div>
 {% endblock %}
