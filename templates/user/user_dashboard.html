@@ -84,7 +84,7 @@
           {% for item in albums %}
           {% if item %}
           <div class="col-4">
-            <div class="card mb-2 mx-1 h-100">
+            <div class="card my-2 mx-1 h-100">
               {% for album, track_, creator in item %}
               {% if loop.first %}
               <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"

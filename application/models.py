@@ -30,7 +30,7 @@ class Tracks(db.Model):
     __tablename__ = "tracks"
     track_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     track_name = db.Column(db.String, nullable=False)
-    artists = db.Column(db.String, nullable=False)
+    artists = db.Column(db.String)
     creator_id = db.Column(db.String, db.ForeignKey("creator.creator_name"))
     track_file = db.Column(db.String, nullable=False)
     genre = db.Column(db.String)

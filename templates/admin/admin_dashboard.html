@@ -300,7 +300,6 @@
 
     clickableElements.forEach(function (element) {
       element.addEventListener('click', function (event) {
-        // Stop the click event from propagating up the DOM hierarchy
         event.stopPropagation();
       });
     });

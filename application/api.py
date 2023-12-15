@@ -13,11 +13,9 @@ class SongAPI(Resource):
         song = Tracks.query.get(song_id)
         creator = Creator.query.get(song.creator_id)
 
-        # Check if user, song, and creator exist
         if not user or not song or not creator:
             return jsonify({"message": "User, song, or creator not found"}), 404
 
-        # Create a nested structure with column names and values
         user_data = {
             column.name: getattr(user, column.name)
             for column in Users.__table__.columns
@@ -31,5 +29,4 @@ class SongAPI(Resource):
             for column in Creator.__table__.columns
         }
 
-        # Return the nested structure
         return jsonify({"song": song_data, "user": user_data, "creator": creator_data})
