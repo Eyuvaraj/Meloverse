@@ -116,7 +116,7 @@
               <ul class="list-group list-group-flush">
                 {% for creator in top_creators %}
                 <li class="list-group-item list-group-item-action"><a style="text-decoration: none;"
-                    href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}">{{
+                    href="{{ url_for('admin.creator_profile', creator=creator.creator_id) }}">{{
                     creator.creator_name }}</a></li>
                 {% endfor %}
               </ul>
@@ -132,7 +132,7 @@
               <ul class="list-group list-group-flush">
                 {% for creator, creator_id in trending_creators.items() %}
                 <li class="list-group-item list-group-item-action"><a style="text-decoration: none;"
-                    href="{{ url_for('admin.creator_profile', user=current_user, creator=creator_id) }}">{{
+                    href="{{ url_for('admin.creator_profile', creator=creator_id) }}">{{
                     creator }}</a></li>
                 {% endfor %}
               </ul>
@@ -217,7 +217,7 @@
     var footer = document.getElementById('footer');
     var stickyFooter = document.querySelector('.sticky-footer');
 
-    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a>`;
+    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/admin/creator/${element.dataset.creatorid}" style="text-decoration: none;">${element.dataset.creator}</a>`;
 
     document.getElementById('selected-track-name').innerText = element.dataset.trackName;
     document.getElementById('audio-player').src = "{{ url_for('static', filename='uploads/') }}" + element.dataset.trackFile;

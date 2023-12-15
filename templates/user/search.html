@@ -46,7 +46,7 @@
                 <div class="col-4">
                     <div class="card mb-1 mt-1">
                         <div class="card-header">
-                            <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                            <a href="{{ url_for('user.creator_profile', creator=creator.creator_id) }}"
                                 style="text-decoration: none;">
                                 {{ creator.creator_name }}
                             </a>
@@ -86,7 +86,7 @@
                 {% for creator in creators %}
                 <div class="col-4">
                     <div class="card mb-2 mt-1">
-                        <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                        <a href="{{ url_for('user.creator_profile', creator=creator.creator_id) }}"
                             style="text-decoration: none;">
                             <div class="card-header">{{ creator.creator_name }}</div>
                         </a>
@@ -108,7 +108,7 @@
                 {% if loop.changed(album.album_id) %}
                 <div class="col-4">
                     <div class="card mb-2 mt-1">
-                        <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                        <a href="{{ url_for('user.creator_profile', creator=creator.creator_id) }}"
                             style="text-decoration: none;">
                             <div class="card-header">{{ album.album_name }} - {{ creator.creator_name }}</div>
                         </a>
@@ -165,7 +165,7 @@
 
                 <div class="col-4">
                     <div class="card mb-1 mt-1">
-                        <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                        <a href="{{ url_for('user.creator_profile', creator=creator.creator_id) }}"
                             style="text-decoration: none;">
                             <div class="card-header">{{ creator.creator_name }}</div>
                         </a>

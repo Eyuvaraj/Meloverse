@@ -98,8 +98,7 @@
                                 {% endif %}
 
                                 {% if creator != None %}
-                                <td><a
-                                        href="{{ url_for('admin.creator_profile', user=current_user.username, creator=creator.creator_id) }}">Yes</a>
+                                <td><a href="{{ url_for('admin.creator_profile', creator=creator.creator_id) }}">Yes</a>
                                 </td>
                                 {% else %}
                                 <td>No</td>

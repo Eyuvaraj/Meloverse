@@ -120,7 +120,7 @@ def user_dashboard(user):
         creator_signup_status=creator,
         alert=alert,
         singles=singles,
-        albums=albums,
+        albums=albums[:3],
         liked_albums=set(album_liked),
         liked_singles=set(singles_liked),
         disliked_singles=set(singles_disliked),
@@ -783,9 +783,9 @@ def new_album(user):
     return render_template("creator/new_album.html", user=current_user.username)
 
 
-@user.route("user/<user>/creator/<creator>", methods=["GET", "POST"])
+@user.route("meloverse/creator/<creator>", methods=["GET", "POST"])
 @login_required
-def creator_profile(user, creator):
+def creator_profile(creator):
     creator = Creator.query.filter_by(creator_id=creator).first()
     if request.method == "POST":
         reaction = request.form.get("reaction")

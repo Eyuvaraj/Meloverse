@@ -178,15 +178,15 @@ def alert(user):
 @admin.route("/admin/<user>/stats", methods=["GET"])
 @login_required
 def stats(user):
-    t = threading.Thread(target=plotter())
+    t = threading.Thread(target=plotter)
     t.start()
     t.join()
     return render_template("admin/stats.html")
 
 
-@admin.route("/admin/<user>/creator/<creator>", methods=["GET", "POST"])
+@admin.route("/admin/creator/<creator>", methods=["GET", "POST"])
 @login_required
-def creator_profile(user, creator):
+def creator_profile(creator):
     creator = Creator.query.get(creator)
     if request.method == "POST":
         song_id = request.form.get("song_id")
@@ -358,13 +358,16 @@ def plotter():
 
     user_count_by_date = {}
     cumulative_users = []
+    current_cumulative = 0  # Keep track of the cumulative count
 
     for join_date in join_dates:
         date_str = join_date
         user_count_by_date[date_str] = user_count_by_date.get(date_str, 0) + 1
-        cumulative_users.append(sum(user_count_by_date.values()))
+        current_cumulative += 1  # Increment cumulative count
+        cumulative_users.append(current_cumulative)
 
     dates, user_counts = zip(*sorted(user_count_by_date.items()))
+    cumulative_users = tuple(cumulative_users)  # Convert to tuple
     plt.figure(figsize=(12, 6))
     plt.plot(cumulative_users, dates)
     plt.ylabel("Join Date")

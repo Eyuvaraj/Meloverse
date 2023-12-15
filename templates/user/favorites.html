@@ -49,7 +49,7 @@
                 {% for artist in artists_followed %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td><a href="{{ url_for('user.creator_profile', user=current_user, creator=artist.creator_id) }}"
+                    <td><a href="{{ url_for('user.creator_profile', creator=artist.creator_id) }}"
                             style="text-decoration: none;">{{
                             artist.creator_name }}</a></td>
                     <td>{{ artist.followers }}</td>

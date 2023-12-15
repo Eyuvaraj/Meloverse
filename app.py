@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_restful import Resource, Api
+from flask import Flask
+from flask_restful import Api
 import os
 from application import config
 from application.config import LocalDevelopmentConfig
@@ -27,7 +27,6 @@ def create_app():
     app.app_context().push()
     db.init_app(app)
     api = Api(app)
-    migrate = Migrate(app, db)
 
     from application.app_controllers.auth import auth
     from application.app_controllers.users import user

@@ -46,7 +46,7 @@
                 <div class="col-4">
                     <div class="card mb-1 mt-1">
                         <div class="card-header">
-                            <a href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                            <a href="{{ url_for('admin.creator_profile', creator=creator.creator_id) }}"
                                 style="text-decoration: none;">
                                 {{ creator.creator_name }}
                             </a>
@@ -71,7 +71,7 @@
                 {% for creator in creators %}
                 <div class="col-4">
                     <div class="card mb-2 mt-1">
-                        <a href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                        <a href="{{ url_for('admin.creator_profile', creator=creator.creator_id) }}"
                             style="text-decoration: none;">
                             <div class="card-header">{{ creator.creator_name }}</div>
                         </a>
@@ -92,7 +92,7 @@
                 {% if loop.changed(album.album_id) %}
                 <div class="col-4">
                     <div class="card mb-2 mt-1">
-                        <a href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                        <a href="{{ url_for('admin.creator_profile', creator=creator.creator_id) }}"
                             style="text-decoration: none;">
                             <div class="card-header">{{ album.album_name }} - {{ creator.creator_name }}</div>
                         </a>
@@ -108,7 +108,7 @@
                                     <li>
                                         <a class="dropdown-item" href="#" data-track-id="{{ t.track_id }}"
                                             data-track-name="{{ t.track_name }}" data-artists="{{ t.artists }}"
-                                            data-creator-id="{{ t.creator_id }}"
+                                            data-creator-id="{{ creator.creator_id }}"
                                             data-creator="{{ creator.creator_name }}" data-lyrics="{{ t.lyrics }}"
                                             data-current-user-name="{{ current_user.username }}"
                                             data-current-user-id="{{ current_user.id }}"
@@ -183,7 +183,7 @@
                 <div class="col-4">
                     <div class="card mb-1 mt-1">
                         <div class="card-header">
-                            <a href="{{ url_for('admin.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                            <a href="{{ url_for('admin.creator_profile', creator=creator.creator_id) }}"
                                 style="text-decoration: none;">
                                 {{ creator.creator_name }}
                             </a>

@@ -87,7 +87,7 @@
             <div class="card my-2 mx-1 h-100">
               {% for album, track_, creator in item %}
               {% if loop.first %}
-              <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+              <a href="{{ url_for('user.creator_profile', creator=creator.creator_id) }}"
                 style="text-decoration: none;">
                 <div class="card-header">{{ creator.creator_name }} - {{ album.genre.upper() }} Album </div>
               </a>
@@ -148,7 +148,7 @@
           <div class="col-4">
             <div class="card mb-2">
               <div class="card-header">
-                <a href="{{ url_for('user.creator_profile', user=current_user, creator=creator.creator_id) }}"
+                <a href="{{ url_for('user.creator_profile', creator=creator.creator_id) }}"
                   style="text-decoration: none;">
                   {{ creator.creator_name }}
                 </a>
@@ -291,7 +291,7 @@
     var likes = element.dataset.likes;
     var dislikes = element.dataset.dislikes;
     var plays = element.dataset.plays;
-    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a> | Plays: ${plays}`;
+    document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/meloverse/creator/${element.dataset.creatorid}" style="text-decoration: none;">${element.dataset.creator}</a> | Plays: ${plays}`;
     var likesButton = document.getElementById('likes');
     var dislikesButton = document.getElementById('dislikes');
     likesButton.innerHTML = `<span class="bi bi-hand-thumbs-up"></span> ${likes}`;
