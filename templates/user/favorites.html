@@ -2,9 +2,40 @@
 
 {% block body %}
 <div class="container">
+    {% if not liked_albums and not fav_playlists and not artists_followed and not liked_tracks %}
+    <h3>Nothing to display here</h3>
+    <pre class="text-end">
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣠⣀⢤⣖⣲⣦⣄⠀⠀⢀⡠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢤⣤⣄⠻⡽⣺⣭⣿⡽⣾⣭⢿⣷⣉⠂⣿⠤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⢿⣭⣏⣿⣷⣿⣿⣿⣽⣳⣾⣯⣿⣿⣏⣯⡴⣏⡆⢠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣝⣯⢞⣿⡿⢿⠻⠛⡭⢛⠳⢋⠝⡩⢟⠻⣿⣟⣿⡿⣜⡍⡶⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⡏⠧⡙⠌⡡⠡⠐⡈⠄⡁⢂⠐⡈⡑⠢⣍⠻⣿⣿⣞⡷⣽⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣾⣿⢞⡷⡈⢆⠑⡈⠄⡁⢂⠐⠠⠐⢀⠂⠡⣈⠱⢠⠓⡜⣿⣺⣽⣿⣳⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣿⣿⣟⠦⡑⢂⠡⠌⡐⢀⠂⠌⠐⢈⠠⠈⠔⡠⢑⢢⠩⡜⣱⣿⣿⣯⠑⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⢏⠢⡑⣌⠶⣱⣎⢦⠘⠠⢈⠀⠄⡱⣸⢴⣣⣌⡒⢡⢛⣾⣿⡧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣷⣿⠂⡱⢰⠉⡎⡤⣌⢆⣫⡑⢂⠸⣰⠱⢍⠛⡉⠯⣝⢢⢉⣾⣟⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣳⢯⠐⡡⠊⡝⢋⠄⢓⠛⠤⡑⢂⠰⣍⠚⡀⢛⡾⢷⣌⠣⢢⢽⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠘⣯⠂⠅⠂⠌⠠⠈⠠⠈⠔⡀⠂⠰⠌⡑⠠⠒⠘⢂⠌⡂⢇⣾⣟⠣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢁⠏⡘⢌⠰⢀⠂⠌⠄⡙⠲⢄⢣⠼⡴⣈⠆⠈⡐⠀⢆⠱⡌⢾⢡⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢌⠢⢍⠢⡑⢢⠙⡈⠔⣈⠅⢂⢂⠘⡄⢣⡘⠤⡐⡉⢆⠳⡘⢬⢃⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⢈⠒⡌⠤⠑⡀⢓⠚⠫⢌⡘⠂⠚⠘⡘⢦⣕⢢⠡⡙⣌⠣⡝⢢⠍⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡤⢃⠜⡠⢂⠌⡑⠢⢐⠃⡚⠴⢩⠖⡌⠢⡐⡱⢠⠓⣜⠣⠎⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠱⣩⢒⡱⢌⠢⢄⡁⢂⠐⡠⢃⠢⡘⢄⠣⣜⡡⢇⡻⣌⠓⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢡⢏⡜⣎⠳⣦⢜⡤⢣⢔⣢⠱⣍⣮⢳⡼⣹⣏⢷⣹⡆⢀⠀⠀⠀⠀⠀⠀⠀⠈⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⠸⡜⣬⢓⣮⣙⣞⢻⡞⣳⣟⡿⣞⣯⣟⡷⣫⡞⣽⢻⣿⡖⢢⠁⠀⠀⠈⠀⠀⠀⠐⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢠⠢⡝⣼⡡⢛⡴⣋⠶⣩⢎⡷⣝⡳⢾⣝⡻⣼⢎⠗⡣⡝⢆⣏⠲⣁⠃⡙⢆⠦⣀⢁⠀⠀⠂⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠰⣈⠖⡱⢘⡼⡇⡅⢒⢩⢒⢡⠚⡴⢡⢋⠳⢎⡹⢐⠊⣬⠱⣉⠆⣇⠢⡅⢊⠔⣈⠒⢥⢪⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⠀⠀⠀⠀⢀⢀⠠⢄⠢⡘⢄⠣⢎⡱⢌⠢⡑⡚⡵⡘⢌⠢⠎⡄⢣⠐⢣⢈⡑⢢⠐⡡⢚⠄⡣⢄⢋⡶⢱⠈⢆⠊⠤⡉⢆⠢⠡⢘⠒⡄⡀⠀⠀⠀⠀⠀⠀
+                                        ⠀⠀⠀⣀⠠⡐⢌⠲⣈⠒⡌⢢⠑⡌⡚⢄⠒⡌⠰⢡⠘⡥⣙⠢⡑⢊⠜⢢⠙⡄⠢⢘⠠⡑⡴⢋⠰⡁⢎⡰⣩⠃⡜⢌⡘⠤⡑⡌⠰⡁⢆⠡⢂⠱⡀⠄⡀⠀⠀⠀
+                                        ⠀⢀⠳⣌⢒⠡⢊⠴⣀⠣⡘⢄⠣⣘⢡⠊⠴⣈⠑⢢⠑⡸⢀⠣⡑⠌⡘⠄⠃⡄⠃⡌⢢⡑⢦⠉⣆⠑⣎⣱⠆⡱⢈⠖⡨⢰⠡⢌⡑⠨⢄⠃⡌⠴⡑⢎⡔⢆⡀⠀
+                                        ⢀⢎⡱⢈⠆⡱⢈⡒⠤⡡⡑⢌⠢⡅⢛⡬⠱⢠⠉⢆⠱⡈⢇⠠⠐⡈⠐⡈⠔⠠⠑⢠⠣⡜⢢⠑⡌⢾⡛⡍⢢⠑⡊⡔⢡⢣⠘⠤⡘⠰⢈⠢⣉⡴⡱⢎⡜⢢⡕⠀
+                                                    </pre>
+    {% else %}
+    <h2 class="text-center">FAVORITES</h2>
+    <hr><br>
     {% if artists_followed %}
     <section>
-        <h4 class="text-center">ARTISTS YOU FOLLOW</h4>
+        <h4>ARTISTS YOU FOLLOW</h4>
         <table class="table table-dark table-hover">
             <thead>
                 <tr>
@@ -39,7 +70,7 @@
 
     {% if fav_playlists %}
     <section>
-        <h4 class="text-center">YOUR FAVORITE PLAYLISTS</h4>
+        <h4>YOUR FAVORITE PLAYLISTS</h4>
         <table class="table table-dark table-hover">
             <thead>
                 <tr>
@@ -95,25 +126,66 @@
 
     {% if liked_tracks %}
     <section>
-        <h4 class="text-center">TRACKS YOU LIKED</h4>
+        <h4>TRACKS YOU LIKED</h4>
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Song</th>
+                    <th>Artists</th>
+                    <th>Genre</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track, creator in liked_tracks %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ track.track_name }}</td>
+                    <td>{{ track.artists }}, {{ creator.creator_name }}</td>
+                    <td>{{ track.genre }}</td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-primary btn-sm" data-track-id="{{ track.track_id }}"
+                            data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
+                            data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
+                            data-lyrics="{{ track.lyrics }}" data-creator="{{ creator.creator_name }}"
+                            data-current-user-name="{{ current_user.username }}" data-plays="{{ track.plays }}"
+                            data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}"
+                            data-current-user-id="{{ current_user.id }}" style="position: relative;">
+                            Play
+                        </button>
+                        <div class="btn-group text-end" role="group">
+                            <button type="button" class="btn btn-sm track-like btn-light"
+                                data-track-id="{{ track.track_id }}" data-value=1>
+                                <span class="bi bi-hand-thumbs-up"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
     </section>
     {% endif %}
 
     {% if liked_albums %}
     <section>
-        <h4 class="text-center">ALBUMS YOU LIKED</h4>
+        <h4>ALBUMS YOU LIKED</h4>
         <table class="table table-dark table-hover">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Album</th>
                     <th>Artist</th>
+                    <th>Tracks</th>
                     <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in liked_albums %}
                 {% for album, track, creator in item %}
+                {% if loop.changed(album.album_id) %}
                 <tr>
                     <td>{{ loop.index }}</td>
                     <td>{{ album.album_name }}</td>
@@ -143,12 +215,14 @@
                             data-album-id="{{ album.album_id }}"><span class="bi bi-hand-thumbs-up"></span></button>
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
         <br>
     </section>
+    {% endif %}
     {% endif %}
 </div>
 {% endblock %}

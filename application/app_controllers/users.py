@@ -75,10 +75,10 @@ def user_dashboard(user):
     alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     album_count = Album.query.count()
-    track_count = abs(Tracks.query.count() - 2)
+    track_count = abs(Tracks.query.count())
     singles = []
-    while len(singles) <= 3:
-        random_tracks_no = random.randint(1, track_count)
+    while len(singles) <= 5:
+        random_tracks_no = random.randint(2, track_count)
         single = get_single(random_tracks_no)
         if single != None and single not in singles:
             singles.append(single)
@@ -102,7 +102,18 @@ def user_dashboard(user):
             if item != None:
                 album_liked.append(album_id)
 
-    print(album_liked)
+    singles_liked, singles_disliked = [], []
+    for track, creator in singles:
+        track_id = track.track_id
+        user_id = current_user.id
+        item = Track_likes_stats.query.filter(
+            Track_likes_stats.user_id == user_id,
+            Track_likes_stats.track_id == track_id,
+        ).first()
+        if item != None and item.value == 1:
+            singles_liked.append(track_id)
+        elif item != None and item.value == -1:
+            singles_disliked.append(track_id)
 
     return render_template(
         "user/user_dashboard.html",
@@ -111,6 +122,8 @@ def user_dashboard(user):
         singles=singles,
         albums=albums,
         liked_albums=set(album_liked),
+        liked_singles=set(singles_liked),
+        disliked_singles=set(singles_disliked),
     )
 
 
@@ -192,6 +205,14 @@ def favorites(user):
         album = get_album(i.album_id)
         liked_albums.append(album)
 
+    liked_track_id = Track_likes_stats.query.filter_by(
+        user_id=current_user.id, value=1
+    ).all()
+    liked_tracks = []
+    for i in liked_track_id:
+        track = get_single(i.track_id)
+        liked_tracks.append(track)
+
     return render_template(
         "user/favorites.html",
         creator_signup_status=creator,
@@ -199,6 +220,7 @@ def favorites(user):
         fav_playlists=fav_playlists,
         fav_playlist_tracks=fav_playlist_tracks,
         liked_albums=liked_albums,
+        liked_tracks=liked_tracks,
     )
 
 
@@ -371,6 +393,7 @@ def search(user):
         query = request.form.get("search")
         creators, albums, tracks, genre = search_query(query)
 
+    liked_albums = []
     if albums:
         for x, y, z in albums:
             album_id = x.album_id
@@ -379,9 +402,36 @@ def search(user):
                 Album_likes_stats.album_id == album_id,
                 Album_likes_stats.user_id == user_id,
             ).first()
-            liked_albums = []
             if item != None:
                 liked_albums.append(album_id)
+
+    liked_tracks, disliked_tracks = [], []
+
+    if tracks:
+        for x, y, z in tracks:
+            track_id = x.track_id
+            user_id = current_user.id
+            item = Track_likes_stats.query.filter(
+                Track_likes_stats.track_id == track_id,
+                Track_likes_stats.user_id == user_id,
+            ).first()
+            if item != None and item.value == 1:
+                liked_tracks.append(track_id)
+            elif item != None and item.value == -1:
+                disliked_tracks.append(track_id)
+
+    if genre:
+        for x, y, z in genre:
+            track_id = x.track_id
+            user_id = current_user.id
+            item = Track_likes_stats.query.filter(
+                Track_likes_stats.track_id == track_id,
+                Track_likes_stats.user_id == user_id,
+            ).first()
+            if item != None and item.value == 1:
+                liked_tracks.append(track_id)
+            elif item != None and item.value == -1:
+                disliked_tracks.append(track_id)
 
     creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template(
@@ -393,6 +443,8 @@ def search(user):
         genre=genre,
         creator_signup_status=creator,
         liked_albums=set(liked_albums),
+        liked_tracks=set(liked_tracks),
+        disliked_tracks=set(disliked_tracks),
     )
 
 
@@ -874,6 +926,50 @@ def album_like():
         else:
             db.session.delete(already_liked)
             db.session.commit()
+        return jsonify({"success": True, "message": "Album liked"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+
+@user.route("/track_like", methods=["POST"])
+@login_required
+def track_like():
+    try:
+        data = request.get_json()
+        track_id = data.get("track_id")
+        user_id = current_user.id
+        like_value = int(data.get("like_value"))
+        already_liked = Track_likes_stats.query.filter_by(
+            track_id=track_id, user_id=user_id
+        ).first()
+        track = Tracks.query.filter_by(track_id=track_id).first()
+        if already_liked == None:
+            new_record = Track_likes_stats(
+                user_id=user_id, track_id=track_id, value=like_value
+            )
+            if like_value == 1:
+                track.likes += 1
+            else:
+                track.dislikes += 1
+            db.session.add(new_record)
+            db.session.commit()
+        else:
+            if like_value == 1 and already_liked.value == -1:
+                already_liked.value = 1
+                track.likes += 1
+                track.dislikes -= 1
+            elif like_value == -1 and already_liked.value == 1:
+                already_liked.value = -1
+                track.dislikes += 1
+                track.likes -= 1
+            else:
+                db.session.delete(already_liked)
+                if already_liked.value == 1:
+                    track.likes -= 1
+                else:
+                    track.dislikes -= 1
+            db.session.commit()
+
         return jsonify({"success": True, "message": "Album liked"})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})

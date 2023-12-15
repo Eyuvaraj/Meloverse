@@ -61,6 +61,20 @@
                             <h5 class="card-title">{{ track.track_name }}{% if track.album_id != 0 %} (album:
                                 {{album.album_name}}) {% endif %}</h5>
                         </div>
+                        <div class="card-footer bg-transparent text-center">
+                            <div class="btn-group text-end" role="group">
+                                <button type="button"
+                                    class="btn btn-sm track-like {% if track.track_id in liked_tracks %} btn-light {% else %} btn-dark {% endif %}"
+                                    data-track-id="{{ track.track_id }}" data-value=1>
+                                    <span class="bi bi-hand-thumbs-up"></span>
+                                </button>
+                                <button type="button"
+                                    class="btn btn-sm track-dislike {% if track.track_id in disliked_tracks %} btn-light {% else %} btn-dark {% endif %}"
+                                    data-track-id="{{ track.track_id }}" data-value=-1>
+                                    <span class="bi bi-hand-thumbs-down"></span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -164,6 +178,20 @@
                             data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}">
                             <h5 class="card-title">{{ track.track_name }} {% if track.album_id != 0 %} (album: {{
                                 album.album_name }}) {% endif %} </h5>
+                        </div>
+                        <div class="card-footer bg-transparent text-center">
+                            <div class="btn-group text-end" role="group">
+                                <button type="button"
+                                    class="btn btn-sm track-like {% if track.track_id in liked_tracks %} btn-light {% else %} btn-dark {% endif %}"
+                                    data-track-id="{{ track.track_id }}" data-value=1>
+                                    <span class="bi bi-hand-thumbs-up"></span>
+                                </button>
+                                <button type="button"
+                                    class="btn btn-sm track-dislike {% if track.track_id in disliked_tracks %} btn-light {% else %} btn-dark {% endif %}"
+                                    data-track-id="{{ track.track_id }}" data-value=-1>
+                                    <span class="bi bi-hand-thumbs-down"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

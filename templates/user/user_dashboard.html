@@ -162,6 +162,20 @@
                 data-current-user-id="{{ current_user.id }}" style="position: relative;">
                 <h5 class="card-title">{{ track.track_name }}</h5>
               </div>
+              <div class="card-footer bg-transparent text-center">
+                <div class="btn-group text-end" role="group">
+                  <button type="button"
+                    class="btn btn-sm track-like {% if track.track_id in liked_singles %} btn-light {% else %} btn-dark {% endif %}"
+                    data-track-id="{{ track.track_id }}" data-value=1>
+                    <span class="bi bi-hand-thumbs-up"></span>
+                  </button>
+                  <button type="button"
+                    class="btn btn-sm track-dislike {% if track.track_id in disliked_singles %} btn-light {% else %} btn-dark {% endif %}"
+                    data-track-id="{{ track.track_id }}" data-value=-1>
+                    <span class="bi bi-hand-thumbs-down"></span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           {% endfor %}
@@ -197,10 +211,10 @@
       </div>
       <div class="col-2 mt-2">
         <button class="btn btn-sm" type="button" id="likes" data-like-status="like">
-          👍
+          <span class="bi bi-hand-thumbs-up"></span>
         </button>
         <button class="btn btn-sm" type="button" id="dislikes" data-like-status="dislike">
-          👎
+          <span class="bi bi-hand-thumbs-down"></span>
         </button>
         <div class="dropup-center dropup">
           <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -280,8 +294,8 @@
     document.getElementById('track-details').innerHTML = `${element.dataset.artists}, <a href="/user/${currentUserId}/creator/${element.dataset.creatorId}" style="text-decoration: none;">${element.dataset.creator}</a> | Plays: ${plays}`;
     var likesButton = document.getElementById('likes');
     var dislikesButton = document.getElementById('dislikes');
-    likesButton.innerText = `👍 ${likes}`;
-    dislikesButton.innerText = `👎 ${dislikes}`;
+    likesButton.innerHTML = `<span class="bi bi-hand-thumbs-up"></span> ${likes}`;
+    dislikesButton.innerHTML = `<span class="bi bi-hand-thumbs-down"></span> ${dislikes}`;
     document.getElementById('audio-player').src = "{{ url_for('static', filename='uploads/') }}" + element.dataset.trackFile;
 
     var lyricsContainer = document.getElementById('lyrics');
@@ -341,6 +355,15 @@
       });
     });
   });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var playButtons = document.querySelectorAll('.btn-primary.btn-sm');
+    playButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        handleInteraction(this);
+      });
+    });
+  });
 </script>
 
 <script>
@@ -371,6 +394,53 @@
       } catch (error) {
         console.error('Error:', error);
       }
+    });
+  });
+
+  async function handleTrackLikeDislike(button) {
+    try {
+      const trackId = button.getAttribute('data-track-id');
+      const likeValue = button.getAttribute('data-value');
+
+      const response = await fetch('/track_like', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          track_id: trackId,
+          like_value: likeValue,
+        }),
+      });
+
+      if (response.ok) {
+        toggleTrackButtonColors(button);
+      } else {
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  function toggleTrackButtonColors(button) {
+    const isLike = button.classList.contains('track-like');
+    const otherButton = isLike ? button.nextElementSibling : button.previousElementSibling;
+
+    button.classList.toggle('btn-dark');
+    button.classList.toggle('btn-light');
+
+    if (otherButton.classList.contains('btn-light')) {
+      otherButton.classList.toggle('btn-dark');
+      otherButton.classList.toggle('btn-light');
+    }
+  }
+
+  const trackButtons = document.querySelectorAll('.track-like, .track-dislike');
+
+  trackButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      handleTrackLikeDislike(this);
     });
   });
 </script>

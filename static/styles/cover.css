@@ -14,11 +14,6 @@ body {
   max-width: 42em;
 }
 
-
-/*
- * Header
- */
-
 .nav-masthead .nav-link {
   color: rgba(255, 255, 255, .5);
   border-bottom: .25rem solid transparent;
@@ -61,15 +56,15 @@ body, html {
 }
 
 header, footer {
-  position: absolute; /* Position header and footer absolutely */
-  width: 100%; /* Set width to span the entire viewport */
-  z-index: 1; /* Set a higher z-index to place them above the background image */
+  position: absolute;
+  width: 100%;
+  z-index: 1;
 }
 
 header {
-  top: 0; /* Position header at the top */
+  top: 0;
 }
 
 footer {
-  bottom: 0; /* Position footer at the bottom */
+  bottom: 0;
 }
