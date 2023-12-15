@@ -145,10 +145,11 @@
                     <td>{{ track.artists }}, {{ creator.creator_name }}</td>
                     <td>{{ track.genre }}</td>
                     <td class="text-end">
-                        <button type="button" class="btn btn-primary btn-sm" data-track-id="{{ track.track_id }}"
-                            data-track-file="{{ track.track_file }}" data-track-name="{{ track.track_name }}"
-                            data-artists="{{ track.artists }}" data-creatorid="{{ creator.creator_id }}"
-                            data-lyrics="{{ track.lyrics }}" data-creator="{{ creator.creator_name }}"
+                        <button type="button" class="btn btn-primary btn-sm playbtn"
+                            data-track-id="{{ track.track_id }}" data-track-file="{{ track.track_file }}"
+                            data-track-name="{{ track.track_name }}" data-artists="{{ track.artists }}"
+                            data-creatorid="{{ creator.creator_id }}" data-lyrics="{{ track.lyrics }}"
+                            data-creator="{{ creator.creator_name }}"
                             data-current-user-name="{{ current_user.username }}" data-plays="{{ track.plays }}"
                             data-dislikes="{{ track.dislikes }}" data-likes="{{ track.likes }}"
                             data-current-user-id="{{ current_user.id }}" style="position: relative;">

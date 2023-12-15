@@ -146,6 +146,7 @@ def creator_signup(user):
 @user.route("/meloverse/u/<user>/favorites", methods=["GET", "POST"])
 @login_required
 def favorites(user):
+    creator = Creator.query.filter_by(creator_id=current_user.id).first()
     if request.method == "POST":
         reaction = request.form.get("reaction")
         if reaction == "unfollow":
@@ -169,8 +170,6 @@ def favorites(user):
             db.session.commit()
 
         return redirect(url_for("user.favorites", user=current_user.id))
-
-    creator = Creator.query.filter_by(creator_id=current_user.id).first()
 
     artists_followed_id = whois_Followeing_who.query.filter_by(
         fan_id=current_user.id
@@ -227,6 +226,8 @@ def favorites(user):
 @user.route("/meloverse/u/<user>/my_playlists", methods=["GET", "POST"])
 @login_required
 def user_playlists(user):
+    creator = Creator.query.filter_by(creator_id=current_user.id).first()
+
     if request.method == "POST":
         if request.form.get("createPlaylist") == "yes":
             plalist_name = request.form.get("playlistName")
@@ -291,7 +292,6 @@ def user_playlists(user):
 
         return redirect(url_for("user.user_playlists", user=current_user.username))
 
-    creator = Creator.query.filter_by(creator_id=current_user.id).first()
     tracks = Tracks.query.order_by(Tracks.track_name).all()
     playlists = (
         db.session.query(Playlist, User_Playlist, Playlist_likes_stats)
@@ -338,6 +338,7 @@ def user_playlists(user):
 @user.route("/meloverse/u/<user>/discover", methods=["GET", "POST"])
 @login_required
 def discover(user):
+    creator = Creator.query.filter_by(creator_id=current_user.id).first()
     if request.method == "POST":
         user = current_user.id
         reaction = request.form.get("reaction")
@@ -372,6 +373,7 @@ def discover(user):
             db.session.add(new_announcement_stat)
 
         db.session.commit()
+        return redirect(url_for("user.discover", user=current_user.username))
     announcements = (
         db.session.query(Announcement, Creator)
         .join(Announcement, Announcement.creator == Creator.creator_name)
@@ -380,7 +382,6 @@ def discover(user):
         .all()
     )
 
-    creator = Creator.query.filter_by(creator_id=current_user.id).first()
     return render_template(
         "user/discover.html", announcements=announcements, creator_signup_status=creator
     )
