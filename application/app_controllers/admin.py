@@ -1,4 +1,4 @@
-from flask import redirect, url_for, render_template, request, Flask, flash, Blueprint
+from flask import render_template, request, Flask, flash, Blueprint
 from ..database import db
 import os
 from ..models import *
@@ -6,11 +6,7 @@ from sqlalchemy import desc, func
 import threading
 from datetime import datetime, timedelta
 from flask_login import (
-    UserMixin,
-    LoginManager,
-    login_user,
     login_required,
-    logout_user,
     current_user,
 )
 from application.app_controllers import auth

@@ -4,12 +4,10 @@ from ..database import db
 from ..models import Users
 from datetime import datetime
 from flask_login import (
-    UserMixin,
     LoginManager,
     login_user,
     login_required,
     logout_user,
-    current_user,
 )
 
 login_manager = LoginManager()

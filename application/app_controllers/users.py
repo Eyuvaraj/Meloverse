@@ -3,7 +3,6 @@ from flask import (
     url_for,
     render_template,
     request,
-    Flask,
     flash,
     Blueprint,
     jsonify,
@@ -36,7 +35,7 @@ def get_album(album_id):
 def get_single(single_id):
     single = (
         db.session.query(Tracks, Creator)
-        .filter(Tracks.album_id == 0, Tracks.track_id == single_id)
+        .filter(Tracks.track_id == single_id)
         .join(Creator, Tracks.creator_id == Creator.creator_id)
         .first()
     )
@@ -73,7 +72,7 @@ def search_query(query):
 @login_required
 def user_dashboard(user):
     alert = Alerts.query.order_by(Alerts.alert_id.desc()).limit(1).first()
-    creator = Creator.query.filter_by(creator_id=current_user.id).first()
+    is_creator = Creator.query.filter_by(creator_id=current_user.id).first()
     album_count = Album.query.count()
     track_count = abs(Tracks.query.count())
     singles = []
@@ -117,7 +116,7 @@ def user_dashboard(user):
 
     return render_template(
         "user/user_dashboard.html",
-        creator_signup_status=creator,
+        creator_signup_status=is_creator,
         alert=alert,
         singles=singles,
         albums=albums[:3],
@@ -898,7 +897,6 @@ def update_like_dislike():
             user_id = data.get("userId")
             track_id = data.get("trackId")
             like_status = data.get("likeStatus")
-            # Add your logic for handling like/dislike here
             print(
                 f"Received like/dislike request for user {user_id}, track {track_id}, status: {like_status}"
             )

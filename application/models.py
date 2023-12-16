@@ -1,6 +1,5 @@
 from .database import db
 from flask_login import UserMixin
-from werkzeug.utils import secure_filename
 import os
 
 
