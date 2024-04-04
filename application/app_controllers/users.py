@@ -12,7 +12,6 @@ from flask import current_app as app
 from ..database import db
 from ..models import *
 from flask_login import login_required, current_user
-from application.app_controllers import auth
 from datetime import datetime
 from sqlalchemy import text, func
 from sqlalchemy.orm import aliased
