@@ -383,4 +383,3 @@ def plotter():
     filepath = os.path.join(assets_path, filename)
     plt.savefig(filepath)
     plt.close()
-    return
