@@ -98,9 +98,9 @@ def admin_dashboard(user):
             .first()
         )
 
-        trending_creators[
-            track_info.Creator.creator_name
-        ] = track_info.Creator.creator_id
+        trending_creators[track_info.Creator.creator_name] = (
+            track_info.Creator.creator_id
+        )
         trending_songs[track_info.Tracks.track_name] = count
 
     for album_id, count in album_trends:
