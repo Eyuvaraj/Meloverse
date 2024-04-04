@@ -1,11 +1,8 @@
 from flask import Flask
 from flask_restful import Api
 import os
-from application import config
 from application.config import LocalDevelopmentConfig
 from application.database import db
-from flask import Blueprint
-from flask_migrate import Migrate
 from application.api import *
 
 app = None

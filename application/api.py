@@ -1,7 +1,6 @@
-from flask_restful import Resource, reqparse, fields, marshal_with
-from application.validation import BusinessValidationError, NotFoundError
+from flask_restful import Resource
 from application.models import Users, Tracks, Creator
-from flask import request, abort, jsonify
+from flask import request, jsonify
 
 
 class SongAPI(Resource):

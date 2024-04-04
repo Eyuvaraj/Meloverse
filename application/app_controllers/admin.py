@@ -1,4 +1,4 @@
-from flask import render_template, request, Flask, flash, Blueprint
+from flask import render_template, request, flash, Blueprint
 from ..database import db
 import os
 from ..models import *
@@ -9,7 +9,6 @@ from flask_login import (
     login_required,
     current_user,
 )
-from application.app_controllers import auth
 from sqlalchemy.orm import aliased
 
 admin = Blueprint("admin", __name__)
@@ -347,8 +346,6 @@ def plotter():
     filepath = os.path.join(assets_path, filename)
     plt.savefig(filepath)
     plt.close()
-
-    from datetime import date
 
     join_dates = db.session.query(Users.date_joined).all()
 
